@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import instance from "@/services/api";
+import publicApi from "@/services/publicApi";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -39,7 +39,6 @@ export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -57,7 +56,7 @@ export default function RegisterPage() {
   const password = watch("password", "");
   const email = watch("email", "");
 
-  // Critérios da senha
+  // Critérios da senha (para feedback visual)
   const rules = [
     {
       id: 1,
@@ -93,10 +92,11 @@ export default function RegisterPage() {
 
   const pendingRules = rules.filter((rule) => !rule.test(password));
 
+  // Verifica se o email já existe
   const checkEmailExists = async () => {
     if (!email) return;
     try {
-      const response = await instance.post("/auth/check-email", { email });
+      const response = await publicApi.post("/auth/check-email", { email });
       if (response.data.exists) {
         setFormError("email", {
           type: "manual",
@@ -104,17 +104,18 @@ export default function RegisterPage() {
         });
       }
     } catch (err) {
-      // não bloqueia formulário
+      console.warn("Falha ao verificar e-mail:", err);
     }
   };
 
+  // Submissão do formulário
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await instance.post("/auth/register", data);
-      setSuccess(response.data.message || "Cadastro realizado com sucesso!");
+      await publicApi.post("/auth/register", data);
+      router.push(`/auth/verify-email?email=${encodeURIComponent(data.email)}`);
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         const data = err.response?.data;
@@ -137,126 +138,110 @@ export default function RegisterPage() {
     <div className="max-w-md mx-auto mt-10">
       <h1 className="text-2xl font-bold mb-6">Registrar</h1>
 
-      {success ? (
-        <div className="text-center mt-6">
-          <p className="text-green-600 mb-4">{success}</p>
-          <Link
-            href="/auth/login"
-            className="inline-block px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Voltar
-          </Link>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {error && <p className="text-red-500">{error}</p>}
+
+        {/* Nome */}
+        <div>
+          <label>Nome</label>
+          <input
+            type="text"
+            {...register("name")}
+            className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
         </div>
-      ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {error && <p className="text-red-500">{error}</p>}
 
-          {/* Nome */}
-          <div>
-            <label>Nome</label>
-            <input
-              type="text"
-              {...register("name")}
-              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.name && (
-              <p className="text-red-500">{errors.name.message}</p>
-            )}
-          </div>
+        {/* E-mail */}
+        <div>
+          <label>E-mail</label>
+          <input
+            type="email"
+            {...register("email")}
+            onBlur={checkEmailExists}
+            className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.email && (
+            <p className="text-red-500">{errors.email.message}</p>
+          )}
+        </div>
 
-          {/* E-mail */}
-          <div>
-            <label>E-mail</label>
-            <input
-              type="email"
-              {...register("email")}
-              onBlur={checkEmailExists}
-              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.email && (
-              <p className="text-red-500">{errors.email.message}</p>
-            )}
-          </div>
-
-          {/* Senha */}
-          <div className="relative">
-            <label>Senha</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              {...register("password")}
-              placeholder="Digite sua senha..."
-              className="w-full p-3 pr-10 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 mt-4  text-gray-400 hover:text-gray-100"
-            >
-              {showPassword ? (
-                <AiOutlineEyeInvisible size={20} />
-              ) : (
-                <AiOutlineEye size={20} />
-              )}
-            </button>
-
-            {pendingRules.length > 0 && (
-              <ul className="mt-2 text-sm space-y-1 text-red-400">
-                {pendingRules.map((rule) => (
-                  <li key={rule.id}>• {rule.label}</li>
-                ))}
-              </ul>
-            )}
-            {password && pendingRules.length === 0 && (
-              <p className="mt-2 text-green-600 text-sm">✅ Senha válida!</p>
-            )}
-          </div>
-
-          {/* Confirmar senha */}
-          <div className="relative mt-4">
-            <label>Confirmar senha</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              {...register("password_confirmation")}
-              placeholder="Confirme sua senha..."
-              onKeyUp={() => trigger("password_confirmation")}
-              className="w-full p-3 pr-10 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 mt-4 text-gray-400 hover:text-gray-100"
-            >
-              {showPassword ? (
-                <AiOutlineEyeInvisible size={20} />
-              ) : (
-                <AiOutlineEye size={20} />
-              )}
-            </button>
-            {errors.password_confirmation && (
-              <p className="text-red-500">
-                {errors.password_confirmation.message}
-              </p>
-            )}
-          </div>
-
+        {/* Senha */}
+        <div className="relative">
+          <label>Senha</label>
+          <input
+            type={showPassword ? "text" : "password"}
+            {...register("password")}
+            placeholder="Digite sua senha..."
+            className="w-full p-3 pr-10 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
           <button
-            type="submit"
-            disabled={loading}
-            className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 mt-4 text-gray-400 hover:text-gray-100"
           >
-            {loading ? "Cadastrando..." : "Cadastrar"}
+            {showPassword ? (
+              <AiOutlineEyeInvisible size={20} />
+            ) : (
+              <AiOutlineEye size={20} />
+            )}
           </button>
-        </form>
-      )}
 
-      {!success && (
-        <p className="mt-4 text-center">
-          Já tem uma conta?{" "}
-          <Link href="/auth/login" className="text-blue-500 hover:underline">
-            Entrar
-          </Link>
-        </p>
-      )}
+          {pendingRules.length > 0 && (
+            <ul className="mt-2 text-sm space-y-1 text-red-400">
+              {pendingRules.map((rule) => (
+                <li key={rule.id}>• {rule.label}</li>
+              ))}
+            </ul>
+          )}
+          {password && pendingRules.length === 0 && (
+            <p className="mt-2 text-green-600 text-sm">✅ Senha válida!</p>
+          )}
+        </div>
+
+        {/* Confirmar senha */}
+        <div className="relative mt-4">
+          <label>Confirmar senha</label>
+          <input
+            type={showPassword ? "text" : "password"}
+            {...register("password_confirmation")}
+            placeholder="Confirme sua senha..."
+            onKeyUp={() => trigger("password_confirmation")}
+            className="w-full p-3 pr-10 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 mt-4 text-gray-400 hover:text-gray-100"
+          >
+            {showPassword ? (
+              <AiOutlineEyeInvisible size={20} />
+            ) : (
+              <AiOutlineEye size={20} />
+            )}
+          </button>
+          {errors.password_confirmation && (
+            <p className="text-red-500">
+              {errors.password_confirmation.message}
+            </p>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          {loading ? "Cadastrando..." : "Cadastrar"}
+        </button>
+      </form>
+
+      <p className="mt-4 text-center">
+        Já tem uma conta?{" "}
+        <Link href="/auth/login">
+          <span className="text-blue-500 hover:underline">Entrar</span>
+        </Link>
+      </p>
     </div>
   );
 }
