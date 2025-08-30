@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { AxiosError } from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import instance from "@/services/api";
 
 // Schema de validação com Yup
@@ -21,41 +22,38 @@ const schema = yup.object().shape({
     .min(8, "A senha deve conter pelo menos 8 caracteres."),
 });
 
+type FormData = {
+  email: string;
+  password: string;
+};
+
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  // Pegando parâmetro da URL de forma segura
   const redirectTo = searchParams.get("next") || "/dashboard";
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Configuração do formulário
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm({
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
-    mode: "onChange", // validação em tempo real
+    mode: "onChange",
   });
 
-  // Função enviar os dados para API validar
-  const onsubmit = async (data: { email: string; password: string }) => {
+  const onSubmit = async (data: FormData) => {
     setLoading(true);
     setError(null);
-    setSuccess(null);
 
     try {
       const response = await instance.post("/auth/login", data);
-
       localStorage.setItem("token", response.data.token);
-
       setSuccess("Login realizado com sucesso!");
-
-      router.push(redirectTo);
     } catch (err: unknown) {
       if (err instanceof AxiosError && err.response) {
         const data = err.response.data;
@@ -71,41 +69,86 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="max-w-md mx-auto mt-10">
+      <h1 className="text-2xl font-bold mb-6">Login</h1>
 
-      {loading && <p>Carregando...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
-
-      <form onSubmit={handleSubmit(onsubmit)}>
-        <div>
-          <label htmlFor="email">E-mail</label>
-          <input type="text" placeholder="E-mail" {...register("email")} />
-          {errors.email && (
-            <p style={{ color: "red" }}>{errors.email.message}</p>
-          )}
+      {/* Exibe sucesso */}
+      {success ? (
+        <div className="text-center mt-6">
+          <p className="text-green-600 mb-4">{success}</p>
+          <button
+            onClick={() => router.push(redirectTo)}
+            className="inline-block px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Continuar
+          </button>
         </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {error && <p className="text-red-500">{error}</p>}
 
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            placeholder="Password"
-            {...register("password")}
-          />
-          {errors.password && (
-            <p style={{ color: "red" }}>{errors.password.message}</p>
-          )}
+          <div>
+            <label htmlFor="email" className="block mb-1 font-medium">
+              E-mail
+            </label>
+            <input
+              type="text"
+              placeholder="E-mail"
+              {...register("email")}
+              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.email && (
+              <p className="text-red-500 mt-1">{errors.email.message}</p>
+            )}
+          </div>
+
+          <div className="relative">
+            <label htmlFor="password" className="block mb-1 font-medium">
+              Senha
+            </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Senha"
+              {...register("password")}
+              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-100"
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible size={20} />
+              ) : (
+                <AiOutlineEye size={20} />
+              )}
+            </button>
+            {errors.password && (
+              <p className="text-red-500 mt-1">{errors.password.message}</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={!isValid || loading}
+            className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            {loading ? "Acessando..." : "Acessar"}
+          </button>
+        </form>
+      )}
+
+      {!success && (
+        <div className="mt-4 text-center space-y-2">
+          <Link href="/auth/register" className="text-blue-500 hover:underline">
+            Cadastrar
+          </Link>
+          <br />
+          <Link href="/forgot" className="text-blue-500 hover:underline">
+            Esqueci minha senha
+          </Link>
         </div>
-
-        <button type="submit" disabled={!isValid || loading}>
-          {loading ? "Acessando..." : "Acessar"}
-        </button>
-      </form>
-
-      <Link href="/register">Cadastrar</Link>
-      <Link href="/forgot">Esqueci minha senha</Link>
+      )}
     </div>
   );
 }
