@@ -93,7 +93,6 @@ export default function RegisterPage() {
 
   const pendingRules = rules.filter((rule) => !rule.test(password));
 
-  // Função para verificar se o e-mail já existe
   const checkEmailExists = async () => {
     if (!email) return;
     try {
@@ -105,7 +104,7 @@ export default function RegisterPage() {
         });
       }
     } catch (err) {
-      // Não faz nada se ocorrer erro aqui, pois não queremos bloquear o formulário
+      // não bloqueia formulário
     }
   };
 
@@ -136,7 +135,7 @@ export default function RegisterPage() {
 
   return (
     <div className="max-w-md mx-auto mt-10">
-      <h1>Registrar</h1>
+      <h1 className="text-2xl font-bold mb-6">Registrar</h1>
 
       {success ? (
         <div className="text-center mt-6">
@@ -152,25 +151,27 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {error && <p className="text-red-500">{error}</p>}
 
+          {/* Nome */}
           <div>
             <label>Nome</label>
             <input
               type="text"
               {...register("name")}
-              className="w-full p-2 border rounded"
+              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.name && (
               <p className="text-red-500">{errors.name.message}</p>
             )}
           </div>
 
+          {/* E-mail */}
           <div>
             <label>E-mail</label>
             <input
               type="email"
               {...register("email")}
-              onBlur={checkEmailExists} // verifica e-mail ao sair do campo
-              className="w-full p-2 border rounded"
+              onBlur={checkEmailExists}
+              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.email && (
               <p className="text-red-500">{errors.email.message}</p>
@@ -183,13 +184,13 @@ export default function RegisterPage() {
             <input
               type={showPassword ? "text" : "password"}
               {...register("password")}
-              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Digite sua senha..."
+              className="w-full p-3 pr-10 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-100"
+              className="absolute right-3 mt-4  text-gray-400 hover:text-gray-100"
             >
               {showPassword ? (
                 <AiOutlineEyeInvisible size={20} />
@@ -216,19 +217,14 @@ export default function RegisterPage() {
             <input
               type={showPassword ? "text" : "password"}
               {...register("password_confirmation")}
-              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Confirme sua senha..."
               onKeyUp={() => trigger("password_confirmation")}
+              className="w-full p-3 pr-10 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {errors.password_confirmation && (
-              <p className="text-red-500">
-                {errors.password_confirmation.message}
-              </p>
-            )}
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-100"
+              className="absolute right-3 mt-4 text-gray-400 hover:text-gray-100"
             >
               {showPassword ? (
                 <AiOutlineEyeInvisible size={20} />
@@ -236,6 +232,11 @@ export default function RegisterPage() {
                 <AiOutlineEye size={20} />
               )}
             </button>
+            {errors.password_confirmation && (
+              <p className="text-red-500">
+                {errors.password_confirmation.message}
+              </p>
+            )}
           </div>
 
           <button
@@ -249,8 +250,11 @@ export default function RegisterPage() {
       )}
 
       {!success && (
-        <p className="mt-4">
-          Já tem uma conta? <Link href="/auth/login">Entrar</Link>
+        <p className="mt-4 text-center">
+          Já tem uma conta?{" "}
+          <Link href="/auth/login" className="text-blue-500 hover:underline">
+            Entrar
+          </Link>
         </p>
       )}
     </div>

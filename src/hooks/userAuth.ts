@@ -11,7 +11,7 @@ export function useAuth() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      router.push("/login");
+      router.push("/auth/login");
     } else {
       setAuthenticated(true);
     }

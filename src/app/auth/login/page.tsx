@@ -53,7 +53,7 @@ export default function LoginPage() {
     try {
       const response = await instance.post("/auth/login", data);
       localStorage.setItem("token", response.data.token);
-      setSuccess("Login realizado com sucesso!");
+      router.push(redirectTo);
     } catch (err: unknown) {
       if (err instanceof AxiosError && err.response) {
         const data = err.response.data;
@@ -72,83 +72,78 @@ export default function LoginPage() {
     <div className="max-w-md mx-auto mt-10">
       <h1 className="text-2xl font-bold mb-6">Login</h1>
 
-      {/* Exibe sucesso */}
-      {success ? (
-        <div className="text-center mt-6">
-          <p className="text-green-600 mb-4">{success}</p>
-          <button
-            onClick={() => router.push(redirectTo)}
-            className="inline-block px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Continuar
-          </button>
+      {/* Sucesso */}
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {error && <p className="text-red-500">{error}</p>}
+
+        {/* E-mail */}
+        <div>
+          <label htmlFor="email" className="block mb-1 font-medium">
+            E-mail
+          </label>
+          <input
+            type="text"
+            placeholder="E-mail"
+            {...register("email")}
+            className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.email && (
+            <p className="text-red-500 mt-1">{errors.email.message}</p>
+          )}
         </div>
-      ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {error && <p className="text-red-500">{error}</p>}
 
-          <div>
-            <label htmlFor="email" className="block mb-1 font-medium">
-              E-mail
-            </label>
-            <input
-              type="text"
-              placeholder="E-mail"
-              {...register("email")}
-              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.email && (
-              <p className="text-red-500 mt-1">{errors.email.message}</p>
-            )}
-          </div>
-
-          <div className="relative">
-            <label htmlFor="password" className="block mb-1 font-medium">
-              Senha
-            </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Senha"
-              {...register("password")}
-              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-100"
-            >
-              {showPassword ? (
-                <AiOutlineEyeInvisible size={20} />
-              ) : (
-                <AiOutlineEye size={20} />
-              )}
-            </button>
-            {errors.password && (
-              <p className="text-red-500 mt-1">{errors.password.message}</p>
-            )}
-          </div>
-
+        {/* Senha */}
+        <div className="relative">
+          <label htmlFor="password" className="block mb-1 font-medium">
+            Senha
+          </label>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Senha"
+            {...register("password")}
+            className="w-full p-3 pr-10 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
           <button
-            type="submit"
-            disabled={!isValid || loading}
-            className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2  text-gray-400 hover:text-gray-100"
           >
-            {loading ? "Acessando..." : "Acessar"}
+            {showPassword ? (
+              <AiOutlineEyeInvisible size={20} />
+            ) : (
+              <AiOutlineEye size={20} />
+            )}
           </button>
-        </form>
-      )}
-
-      {!success && (
-        <div className="mt-4 text-center space-y-2">
-          <Link href="/auth/register" className="text-blue-500 hover:underline">
-            Cadastrar
-          </Link>
-          <br />
-          <Link href="/forgot" className="text-blue-500 hover:underline">
-            Esqueci minha senha
-          </Link>
+          {errors.password && (
+            <p className="text-red-500 mt-1">{errors.password.message}</p>
+          )}
         </div>
-      )}
+
+        {/* Botão de login */}
+        <button
+          type="submit"
+          disabled={!isValid || loading}
+          className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          {loading ? "Acessando..." : "Acessar"}
+        </button>
+      </form>
+
+      {/* Links de cadastro e esqueci a senha */}
+
+      <div className="mt-4 text-center space-y-2">
+        <Link href="/auth/register" className="text-blue-500 hover:underline">
+          Cadastrar
+        </Link>
+        <br />
+        <Link
+          href="/auth/forgot-password"
+          className="text-blue-500 hover:underline"
+        >
+          Esqueci minha senha
+        </Link>
+      </div>
     </div>
   );
 }
