@@ -19,10 +19,10 @@ import { useRouter } from "next/navigation";
 // Componentes auxiliares
 import Link from "next/link";
 import instance from "@/services/api"; // sua instância axios configurada
-import Menu from "@/componets/Menu"; // seu menu de navegação
+import Menu from "@/components/Menu"; // seu menu de navegação
 
 //Importar o Hooks responsável pela proteção de rotas
-import { ProtectedRoute } from "@/componets/ProtectedRoute";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // Schema de validação com Yup
 const schema = yup.object().shape({

@@ -1,8 +1,8 @@
 "use client";
 
-import Menu from "@/componets/Menu";
+import Menu from "@/components/Menu";
 //Importar o Hooks responsável pela proteção de rotas
-import { ProtectedRoute } from "@/componets/ProtectedRoute";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 const Dashboard = () => {
   return (

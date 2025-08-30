@@ -9,10 +9,10 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 import instance from "@/services/api";
-import Menu from "@/componets/Menu";
+import Menu from "@/components/Menu";
 
 //Importar o Hooks responsável pela proteção de rotas
-import { ProtectedRoute } from "@/componets/ProtectedRoute";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // Schema de validação com Yup
 const schema = yup.object().shape({

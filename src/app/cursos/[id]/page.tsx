@@ -5,9 +5,9 @@ import { useParams } from "next/navigation";
 import instance from "@/services/api";
 import { AxiosError } from "axios";
 import Link from "next/link";
-import Menu from "@/componets/Menu";
+import Menu from "@/components/Menu";
 //Importar o Hooks responsável pela proteção de rotas
-import { ProtectedRoute } from "@/componets/ProtectedRoute";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 type Curso = {
   id: number;

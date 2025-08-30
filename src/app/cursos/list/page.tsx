@@ -5,12 +5,12 @@ import instance from "@/services/api";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { AxiosError } from "axios";
-import Menu from "@/componets/Menu";
-import Pagination from "@/componets/Pagination";
-import DeleteButton from "@/componets/DeleteButton";
+import Menu from "@/components/Menu";
+import Pagination from "@/components/Pagination";
+import DeleteButton from "@/components/DeleteButton";
 
 //Importar o Hooks responsável pela proteção de rotas
-import { ProtectedRoute } from "@/componets/ProtectedRoute";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 type Curso = {
   id: number;
