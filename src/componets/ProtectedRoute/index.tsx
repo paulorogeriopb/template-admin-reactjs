@@ -9,9 +9,9 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { authenticated, loading } = useAuth();
 
-  if (loading) return <p>Carregando...</p>;
+  if (loading) return <p>Carregando...</p>; // espera confirmação da API
 
-  // Se não estiver autenticado, renderiza a tela de login **no lugar** do conteúdo
+  // Se não estiver autenticado, redireciona ou mostra login
   if (!authenticated) return <LoginPage />;
 
   return <>{children}</>;
