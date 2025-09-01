@@ -10,6 +10,9 @@ import Link from "next/link";
 import { AxiosError } from "axios";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
+// Componentes auxiliares
+import Image from "next/image";
+
 // Schema de validação com Yup
 const schema = yup.object().shape({
   name: yup.string().required("O nome é obrigatório."),
@@ -135,113 +138,143 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-6">Registrar</h1>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {error && <p className="text-red-500">{error}</p>}
-
-        {/* Nome */}
-        <div>
-          <label>Nome</label>
-          <input
-            type="text"
-            {...register("name")}
-            className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+    <div className="bg-login">
+      <div className="card-login">
+        <div className="logo-wrapper-login">
+          <Link href="/">
+            <Image
+              src="/images/logo2.png"
+              alt="Logo"
+              width={80}
+              height={80}
+              className="rounded"
+            />
+          </Link>
         </div>
 
-        {/* E-mail */}
-        <div>
-          <label>E-mail</label>
-          <input
-            type="email"
-            {...register("email")}
-            onBlur={checkEmailExists}
-            className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {errors.email && (
-            <p className="text-red-500">{errors.email.message}</p>
-          )}
-        </div>
+        <h1 className="title-login">Registrar</h1>
 
-        {/* Senha */}
-        <div className="relative">
-          <label>Senha</label>
-          <input
-            type={showPassword ? "text" : "password"}
-            {...register("password")}
-            placeholder="Digite sua senha..."
-            className="w-full p-3 pr-10 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 mt-4 text-gray-400 hover:text-gray-100"
-          >
-            {showPassword ? (
-              <AiOutlineEyeInvisible size={20} />
-            ) : (
-              <AiOutlineEye size={20} />
+        {loading && <p>Carregando...</p>}
+
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
+          {error && <p className="text-red-500">{error}</p>}
+
+          {/* Nome */}
+          <div className="form-group-login">
+            <label htmlFor="name" className="form-label-login">
+              Nome
+            </label>
+            <input
+              type="text"
+              placeholder="Nome"
+              {...register("name")}
+              className="form-input-login"
+            />
+            {errors.name && (
+              <p className="text-red-500">{errors.name.message}</p>
             )}
-          </button>
+          </div>
 
-          {pendingRules.length > 0 && (
-            <ul className="mt-2 text-sm space-y-1 text-red-400">
-              {pendingRules.map((rule) => (
-                <li key={rule.id}>• {rule.label}</li>
-              ))}
-            </ul>
-          )}
-          {password && pendingRules.length === 0 && (
-            <p className="mt-2 text-green-600 text-sm">✅ Senha válida!</p>
-          )}
-        </div>
-
-        {/* Confirmar senha */}
-        <div className="relative mt-4">
-          <label>Confirmar senha</label>
-          <input
-            type={showPassword ? "text" : "password"}
-            {...register("password_confirmation")}
-            placeholder="Confirme sua senha..."
-            onKeyUp={() => trigger("password_confirmation")}
-            className="w-full p-3 pr-10 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 mt-4 text-gray-400 hover:text-gray-100"
-          >
-            {showPassword ? (
-              <AiOutlineEyeInvisible size={20} />
-            ) : (
-              <AiOutlineEye size={20} />
+          {/* E-mail */}
+          <div className="form-group-login">
+            <label htmlFor="email" className="form-label-login">
+              E-mail
+            </label>
+            <input
+              type="email"
+              placeholder="E-mail"
+              {...register("email")}
+              onBlur={checkEmailExists}
+              className="form-input-login"
+            />
+            {errors.email && (
+              <p className="text-red-500">{errors.email.message}</p>
             )}
+          </div>
+
+          {/* Senha */}
+          <div className="relative form-group-login">
+            <label htmlFor="password" className="form-label-login">
+              Senha
+            </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              {...register("password")}
+              placeholder="Digite sua senha..."
+              className="form-input-login"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="showPassword"
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible size={20} />
+              ) : (
+                <AiOutlineEye size={20} />
+              )}
+            </button>
+
+            {pendingRules.length > 0 && (
+              <ul className="mt-2 text-sm space-y-1 text-red-400">
+                {pendingRules.map((rule) => (
+                  <li key={rule.id}>• {rule.label}</li>
+                ))}
+              </ul>
+            )}
+            {password && pendingRules.length === 0 && (
+              <p className="mt-2 text-green-600 text-sm">
+                Perfeito, senha válida!
+              </p>
+            )}
+          </div>
+
+          {/* Confirmar senha */}
+          <div className="relative form-group-login">
+            <label htmlFor="password_confirmation" className="form-label-login">
+              Confirmar senha
+            </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              {...register("password_confirmation")}
+              placeholder="Confirme sua senha..."
+              onKeyUp={() => trigger("password_confirmation")}
+              className="form-input-login"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="showPassword"
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible size={20} />
+              ) : (
+                <AiOutlineEye size={20} />
+              )}
+            </button>
+            {errors.password_confirmation && (
+              <p className="text-red-500">
+                {errors.password_confirmation.message}
+              </p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className=" btn-login mt-4  "
+          >
+            {loading ? "Cadastrando..." : "Cadastrar"}
           </button>
-          {errors.password_confirmation && (
-            <p className="text-red-500">
-              {errors.password_confirmation.message}
-            </p>
-          )}
-        </div>
+        </form>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          {loading ? "Cadastrando..." : "Cadastrar"}
-        </button>
-      </form>
-
-      <p className="mt-4 text-center">
-        Já tem uma conta?{" "}
-        <Link href="/auth/login">
-          <span className="text-blue-500 hover:underline">Entrar</span>
-        </Link>
-      </p>
+        <p className="mt-4 text-center text-gray-700">
+          Já tem uma conta?{" "}
+          <Link href="/auth/login">
+            <span className="link-login">Entrar</span>
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

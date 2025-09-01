@@ -49,7 +49,6 @@ export default function LoginPage() {
 
   const emailValue = watch("email");
 
-  // Checa token ao montar a página
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -70,27 +69,17 @@ export default function LoginPage() {
 
     try {
       const response = await instance.post("/auth/login", data);
-      console.log("Login successful:", response.data);
       localStorage.setItem("token", response.data.token);
       router.push(redirectTo);
     } catch (err: unknown) {
-      console.log("Login API error:", err);
-
       if (err instanceof AxiosError && err.response) {
         const apiData = err.response.data;
-        console.log("Login API response message:", apiData.message);
-
-        // Detecta se o email não foi verificado
         if (
           apiData.message ===
           "Você precisa validar o seu e-mail antes de acessar o sistema. Verifique seu e-mail e clique no link de verificação."
         ) {
-          console.log(
-            "Email não verificado detectado! Mostrando botão de reenvio"
-          );
           setEmailNotVerified(true);
         }
-
         setError(apiData.message || apiData.error || "Erro inesperado");
       } else {
         setError("Erro de conexão com o servidor, tente novamente mais tarde.");
@@ -114,13 +103,11 @@ export default function LoginPage() {
       const res = await instance.post("/auth/resend-verification-email", {
         email: emailValue,
       });
-      console.log("Resend email response:", res.data);
       setSuccess(
         res.data.message || "E-mail de verificação enviado com sucesso!"
       );
       setEmailNotVerified(false);
     } catch (err: unknown) {
-      console.log("Erro ao reenviar e-mail:", err);
       setError(
         err instanceof AxiosError && err.response
           ? err.response.data.message || "Erro ao reenviar e-mail."
@@ -131,73 +118,67 @@ export default function LoginPage() {
     }
   };
 
-  if (checkingAuth) return <p>Carregando...</p>;
+  if (checkingAuth) return <p className="text-center mt-20">Carregando...</p>;
 
   return (
-    <div className="bg-login">
-      <div className="card-login">
-        <div className="logo-wrapper-login">
-          <Link href="/">
-            <Image
-              src="/images/logo2.png"
-              alt="Logo"
-              width={80}
-              height={80}
-              className="rounded"
-            />
-          </Link>
+    <div className="min-h-screen flex items-center justify-center bg-gray-800 ">
+      <div className="w-full max-w-md p-8 bg-gray-900 rounded-2xl shadow-lg space-y-6">
+        <div className="flex justify-center mb-4">
+          <Image
+            src="/images/logo2.png"
+            alt="Logo"
+            width={80}
+            height={80}
+            className="rounded"
+          />
         </div>
+        <h1 className="text-3xl font-bold text-white text-center">Nimbus</h1>
+        <p className="text-gray-300 text-center mb-6">Área Restrita</p>
 
-        <h1 className="title-logo">Nimbus</h1>
-        <p className="subtitle-login">Área Restrita</p>
-        {loading && <p>Carregando...</p>}
-
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-          {error && <p className="alert-danger">{error}</p>}
-
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           {emailNotVerified && (
             <button
               type="button"
               onClick={handleResendEmail}
-              className="mt-2 px-4 py-2 bg-yellow-200 text-yellow-900 font-medium rounded-lg shadow-sm 
-               hover:bg-yellow-300 hover:text-yellow-950 transition-colors duration-200 
-               cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              className="w-full py-2 px-4 bg-yellow-500 text-yellow-900 rounded-lg hover:bg-yellow-600 transition"
             >
               Reenviar e-mail
             </button>
           )}
+          {success && <p className="text-green-500 text-sm">{success}</p>}
 
-          {success && <p className="alert-success">{success}</p>}
-
-          <div className="form-group-login">
-            <label htmlFor="email" className="form-label-login">
+          <div className="flex flex-col">
+            <label htmlFor="email" className="text-gray-200 mb-1">
               E-mail
             </label>
             <input
               type="text"
               placeholder="E-mail"
               {...register("email")}
-              className="form-input-login"
+              className="px-3 py-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
             />
             {errors.email && (
-              <p className="text-red-500 mt-1">{errors.email.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
-          <div className="relative form-group-login">
-            <label htmlFor="password" className="form-label-login">
+          <div className="relative flex flex-col">
+            <label htmlFor="password" className="text-gray-200 mb-1">
               Senha
             </label>
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Senha"
               {...register("password")}
-              className="form-input-login"
+              className="px-3 py-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 w-full"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="showPassword"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-100"
             >
               {showPassword ? (
                 <AiOutlineEyeInvisible size={20} />
@@ -206,28 +187,34 @@ export default function LoginPage() {
               )}
             </button>
             {errors.password && (
-              <p className="text-red-500 mt-1">{errors.password.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
-          <div className="btn-group-login">
-            <button
-              type="submit"
-              disabled={!isValid || loading}
-              className="btn-login"
-            >
-              {loading ? "Acessando..." : "Acessar"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={!isValid || loading}
+            className={`w-full py-2 rounded-lg font-semibold text-white transition ${
+              isValid && !loading
+                ? "bg-cyan-600 hover:bg-cyan-700"
+                : "bg-gray-600 cursor-not-allowed"
+            }`}
+          >
+            {loading ? "Acessando..." : "Acessar"}
+          </button>
         </form>
 
-        <div className="mt-4 text-center">
-          <Link href="/auth/forgot-password" className="link-login">
+        <div className="flex flex-col items-center mt-4 space-y-2">
+          <Link href="/auth/register" className="text-cyan-400 hover:underline">
+            Cadastrar
+          </Link>
+          <Link
+            href="/auth/forgot-password"
+            className="text-cyan-400 hover:underline"
+          >
             Esqueci minha senha
-          </Link>{" "}
-          <span className="text-gray-400 ml-3 mr-3">/</span>
-          <Link href="/auth/register" className="link-login">
-            Criar nova conta!
           </Link>
         </div>
       </div>

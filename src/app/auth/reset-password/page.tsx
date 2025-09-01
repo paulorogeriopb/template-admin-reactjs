@@ -9,6 +9,7 @@ import instance from "@/services/api";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 // Schema para reset de senha
 const passwordSchema = yup.object().shape({
@@ -181,126 +182,148 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-6">Redefinir senha</h1>
-
-      {/* Mensagens de erro */}
-      {errorCode && !step && <p className="text-red-500 mb-4">{errorCode}</p>}
-      {errorPassword && step && (
-        <p className="text-red-500 mb-4">{errorPassword}</p>
-      )}
-
-      {/* Etapa 1: Código */}
-      {!step && !success ? (
-        <>
-          <div className="flex justify-between space-x-2 mb-4">
-            {code.map((num, idx) => (
-              <input
-                key={idx}
-                type="text"
-                maxLength={1}
-                value={num}
-                ref={(el) => (inputsRef.current[idx] = el)}
-                onChange={(e) => handleChange(e, idx)}
-                onKeyDown={(e) => handleKeyDown(e, idx)}
-                onPaste={handlePaste}
-                className={`w-16 h-20 text-center text-4xl rounded-lg bg-gray-800 text-white border ${
-                  errorCode ? "border-red-500" : "border-gray-600"
-                } focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300`}
-              />
-            ))}
-          </div>
-
-          <button
-            type="button"
-            onClick={() => validateCode(code.join(""))}
-            disabled={loadingCode || code.join("").trim().length !== 6}
-            className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            {loadingCode ? "Validando..." : "Verificar código"}
-          </button>
-        </>
-      ) : step && !success ? (
-        // Etapa 2: redefinir senha
-        <form onSubmit={handleSubmit(resetPassword)} className="space-y-4">
-          <div className="relative">
-            <label>Nova senha</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              {...register("password")}
-              placeholder="Digite a nova senha"
-              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    <div className="bg-login">
+      <div className="card-login sm:max-w-2xl">
+        <div className="logo-wrapper-login">
+          <Link href="/">
+            <Image
+              src="/images/logo2.png"
+              alt="Logo"
+              width={80}
+              height={80}
+              className="rounded"
             />
+          </Link>
+        </div>
+
+        <h1 className="title-logo">Nimbus</h1>
+        <p className="title-login">Redifinição de Senha</p>
+
+        {/* Mensagens de erro */}
+        {errorCode && !step && <p className="alert-danger mb-4">{errorCode}</p>}
+        {errorPassword && step && (
+          <p className="alert-danger mb-4">{errorPassword}</p>
+        )}
+
+        {/* Etapa 1: Código */}
+        {!step && !success ? (
+          <>
+            <div className="flex justify-between space-x-2 mb-4">
+              {code.map((num, idx) => (
+                <input
+                  key={idx}
+                  type="text"
+                  maxLength={1}
+                  value={num}
+                  ref={(el) => (inputsRef.current[idx] = el)}
+                  onChange={(e) => handleChange(e, idx)}
+                  onKeyDown={(e) => handleKeyDown(e, idx)}
+                  onPaste={handlePaste}
+                  className={`w-16 h-20 text-center text-4xl rounded-lg text-white border 
+  ${errorCode ? "border-red-500" : ""} 
+  focus:outline-none transition-all duration-300`}
+                  style={{
+                    backgroundColor: "#298ba1",
+                    borderColor: errorCode ? undefined : "#32a2b9",
+                    boxShadow: errorCode ? undefined : "0 0 0 2px #32a2b9", // simula focus:ring
+                  }}
+                />
+              ))}
+            </div>
+
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-100"
+              onClick={() => validateCode(code.join(""))}
+              disabled={loadingCode || code.join("").trim().length !== 6}
+              className="btn-login"
             >
-              {showPassword ? (
-                <AiOutlineEyeInvisible size={20} />
-              ) : (
-                <AiOutlineEye size={20} />
-              )}
+              {loadingCode ? "Validando..." : "Verificar código"}
             </button>
-            {pendingRules.length > 0 && (
-              <ul className="mt-2 text-sm space-y-1 text-red-400">
-                {pendingRules.map((rule) => (
-                  <li key={rule.id}>• {rule.label}</li>
-                ))}
-              </ul>
-            )}
-            {password && pendingRules.length === 0 && (
-              <p className="mt-2 text-green-600 text-sm">✅ Senha válida!</p>
-            )}
+          </>
+        ) : step && !success ? (
+          // Etapa 2: redefinir senha
+          <form onSubmit={handleSubmit(resetPassword)} className="mt-4">
+            <div className="relative form-group-login">
+              <label htmlFor="password" className="form-label-login">
+                Nova senha
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                placeholder="Digite a nova senha"
+                className="form-input-login"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="showPassword"
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible size={20} />
+                ) : (
+                  <AiOutlineEye size={20} />
+                )}
+              </button>
+              {pendingRules.length > 0 && (
+                <ul className="mt-2 text-sm space-y-1 text-red-400">
+                  {pendingRules.map((rule) => (
+                    <li key={rule.id}>• {rule.label}</li>
+                  ))}
+                </ul>
+              )}
+              {password && pendingRules.length === 0 && (
+                <p className="mt-2 text-green-600 text-sm">Senha válida!</p>
+              )}
+            </div>
+
+            <div className="relative form-group-login mt-4">
+              <label
+                htmlFor="password_confirmation"
+                className="form-label-login"
+              >
+                Confirmar senha
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password_confirmation")}
+                placeholder="Confirme a nova senha"
+                className="form-input-login"
+                onKeyUp={() => trigger("password_confirmation")}
+              />
+              {errors.password_confirmation && (
+                <p className="text-red-400 mt-1">
+                  {errors.password_confirmation.message}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={!isValid || loadingPassword}
+              className="btn-login mt-4"
+            >
+              {loadingPassword ? "Redefinindo..." : "Redefinir senha"}
+            </button>
+          </form>
+        ) : (
+          // Mensagem de sucesso
+          <div className="text-center mt-6">
+            <p className="alert-success mb-4">Senha redefinida com sucesso!</p>
+            <Link href="/auth/login" className="inline-block w-lg btn-login">
+              Ir para login
+            </Link>
           </div>
+        )}
 
-          <div className="relative mt-4">
-            <label>Confirmar senha</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              {...register("password_confirmation")}
-              placeholder="Confirme a nova senha"
-              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              onKeyUp={() => trigger("password_confirmation")}
-            />
-            {errors.password_confirmation && (
-              <p className="text-red-500 mt-1">
-                {errors.password_confirmation.message}
-              </p>
-            )}
+        {/* Link de voltar */}
+        {!success && (
+          <div className="mt-4 text-center">
+            <Link href="/auth/login" className="link-login">
+              Voltar ao login
+            </Link>
           </div>
-
-          <button
-            type="submit"
-            disabled={!isValid || loadingPassword}
-            className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            {loadingPassword ? "Redefinindo..." : "Redefinir senha"}
-          </button>
-        </form>
-      ) : (
-        // Mensagem de sucesso
-        <div className="text-center mt-6">
-          <p className="text-green-600 text-xl font-semibold mb-4">
-            Senha redefinida com sucesso!
-          </p>
-          <Link
-            href="/auth/login"
-            className="inline-block px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Ir para login
-          </Link>
-        </div>
-      )}
-
-      {/* Link de voltar */}
-      {!success && (
-        <div className="mt-4 text-center">
-          <Link href="/auth/login" className="text-blue-500 hover:underline">
-            Voltar ao login
-          </Link>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

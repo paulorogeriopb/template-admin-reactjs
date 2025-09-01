@@ -8,6 +8,7 @@ import { AxiosError } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import instance from "@/services/api";
+import Image from "next/image";
 
 const schema = yup.object().shape({
   email: yup
@@ -65,48 +66,68 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-6">Esqueci minha senha</h1>
-
-      {success ? (
-        <div className="text-center mt-6">
-          <p className="text-green-600 mb-4">{success}</p>
-          <p>Redirecionando para redefinir a senha...</p>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {error && <p className="text-red-500">{error}</p>}
-
-          <div>
-            <label className="block mb-1 font-medium">E-mail</label>
-            <input
-              type="email"
-              placeholder="Digite seu e-mail"
-              {...register("email")}
-              className="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    <div className="bg-login">
+      <div className="card-login">
+        <div className="logo-wrapper-login">
+          <Link href="/">
+            <Image
+              src="/images/logo2.png"
+              alt="Logo"
+              width={80}
+              height={80}
+              className="rounded"
             />
-            {errors.email && (
-              <p className="text-red-500 mt-1">{errors.email.message}</p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={!isValid || loading}
-            className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            {loading ? "Enviando..." : "Enviar código"}
-          </button>
-        </form>
-      )}
-
-      {!success && (
-        <div className="mt-4 text-center">
-          <Link href="/auth/login" className="text-blue-500 hover:underline">
-            Voltar ao login
           </Link>
         </div>
-      )}
+
+        <h1 className="title-login">Esqueci minha senha</h1>
+
+        <p className="subtitle-login">
+          Insira seu e-mail para receber o código de redefinição
+        </p>
+
+        {success ? (
+          <div className="text-center mt-6">
+            <p className="alert-success">{success}</p>
+            <p>Redirecionando para redefinir a senha...</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {error && <p className="alert-danger">{error}</p>}
+
+            <div className="form-group-login">
+              <label htmlFor="email" className="form-label-login">
+                E-mail
+              </label>
+              <input
+                type="email"
+                placeholder="Digite seu e-mail"
+                {...register("email")}
+                className="form-input-login"
+              />
+              {errors.email && (
+                <p className="text-red-500 mt-1">{errors.email.message}</p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={!isValid || loading}
+              className="btn-login"
+            >
+              {loading ? "Enviando..." : "Enviar código"}
+            </button>
+          </form>
+        )}
+
+        {!success && (
+          <div className="mt-4 text-center">
+            <Link href="/auth/login" className="link-login">
+              Voltar ao login
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

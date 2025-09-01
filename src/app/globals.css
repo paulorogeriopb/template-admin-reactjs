@@ -1,27 +1,271 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
+/* Suas variáveis globais */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-sans: "Figtree", sans-serif;
+  --default: #298ba1;
+  --default-secondary: #32a2b9;
+
+  --dark-primary: #1d232a;
+  --dark-secondary: #191e24;
+  --dark-tertiary: #14191f;
+
+  --light-primary: #f4f6f9;
+  --light-secondary: #ebeef4;
+  --light-tertiary: #d8dee9;
+
+  --text-primary: #1375c0;
+  --primary: #188ae2;
+  --primary-secondary: #dcedfb;
+
+  --text-secondary: #4d59a0;
+  --secondary: #5b69bc;
+  --secondary-secondary: #e6e9f5;
+
+  --text-success: #4fab5a;
+  --success: #5cc66a;
+  --success-secondary: #dbf6e9;
+
+  --text-danger: #db4d52;
+  --danger: #f2585a;
+  --danger-secondary: #fce6e6;
+
+  --text-warning: #dcab45;
+  --warning: #f9c851;
+  --warning-secondary: #fef7e5;
+
+  --text-info: #2dabdb;
+  --info: #35b8e0;
+  --info-secondary: #e1f4fa;
+
+  --text-light: #8a9ebb;
+  --alert-light: #eef2f7;
+  --alert-light-secondary: #fbfbfd;
+
+  --text-dark: #343a40;
+  --alert-dark: #313a46;
+  --alert-dark-secondary: #ced4da;
+
+  --sombra: #191e24;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer components {
+  /****** Início Login ******/
+  /* Estilização do fundo */
+  .bg-login {
+    @apply bg-(--light-secondary) min-h-screen flex flex-col justify-center items-center dark:bg-(--dark-secondary);
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  padding: 20px;
+  /*.bg-login {
+    @apply min-h-screen flex flex-col justify-center items-center;
+    background-image: linear-gradient(
+        rgba(41, 139, 161, 0.9),
+        rgba(216, 222, 233, 0.8)
+      ),
+      url("https://t3.ftcdn.net/jpg/05/81/81/02/360_F_581810240_UuHakhuiTj9XnOuMtAutxO604AIDC29x.jpg");
+    background-size: cover;
+    background-position: center;
+  }*/
+
+  /* Container principal do formulário
+  .card-login {
+    @apply bg-(--light-primary) mt-6 w-full overflow-hidden px-6 py-4 border border-gray-100 sm:max-w-md sm:rounded-lg dark:bg-(--dark-primary);
+  }*/
+
+  /*
+  .card-login {
+    @apply mt-6 w-full overflow-hidden px-6 py-4  sm:max-w-md;
+  }*/
+
+  /* Wrapper da logo */
+  .logo-wrapper-login {
+    @apply flex justify-center;
+  }
+
+  /* Estilização da logo */
+
+  /* Logo */
+  .title-logo {
+    color: var(--default);
+    @apply text-4xl font-semibold text-center mb-2 text-shadow-md;
+  }
+
+  /* Estilização do título */
+  .title-login {
+    @apply text-2xl font-semibold text-center text-(--default) mb-3 text-shadow-md;
+  }
+
+  .subtitle-login {
+    @apply text-center text-gray-600 mb-4;
+  }
+
+  /* Margem superior para os campos */
+  .form-group-login {
+    @apply mt-4;
+  }
+
+  /* Estilização do label */
+  .form-label-login {
+    @apply text-gray-700 block text-sm font-medium dark:text-gray-400;
+  }
+
+  /* Estilização do input 
+  .form-input-login {
+    @apply mt-1 w-full p-3 pr-10 text-gray-600 rounded-xl border border-gray-300 focus:border-gray-300 focus:ring-2 focus:ring-(--default) focus:outline-none px-3 py-3 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400;
+  }*/
+
+  .form-input-login {
+    @apply mt-1 w-full p-3 pr-10 text-gray-600 rounded-xl border 
+         border-gray-300 
+         focus:border-gray-300 
+         focus:ring-2 focus:ring-(--default) focus:outline-none 
+         px-3 py-3 
+         dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400;
+  }
+
+  /* vazio → cinza */
+  .form-input-login:placeholder-shown {
+    @apply bg-gray-100;
+  }
+
+  /* preenchido → branco */
+  .form-input-login:not(:placeholder-shown) {
+    @apply bg-white;
+  }
+  /* Margem superior para o link e o botão */
+  .btn-group-login {
+    @apply mt-4 flex items-center justify-between;
+  }
+
+  /* Link da página de login */
+  .link-login {
+    @apply text-base  hover:no-underline text-(--default) hover:text-(--default-secondary);
+  }
+
+  .showPassword {
+    @apply absolute right-3 mt-4 text-gray-600 hover:text-gray-400;
+  }
+
+  .btn-login {
+    @apply bg-(--default) w-full text-shadow-md shadow-xl  text-white text-xl px-2 py-2 rounded-xl hover:bg-(--default-secondary) transition-colors cursor-pointer;
+  }
+
+  /****** Fim Login ******/
+
+  /****** Início Botões ******/
+
+  .btn-default {
+    @apply bg-(--default) text-white text-sm px-2 py-1 rounded hover:bg-(--default-secondary) transition-colors cursor-pointer;
+  }
+
+  .btn-default-md {
+    @apply bg-(--default) text-white text-sm px-2 py-2 rounded hover:bg-(--default-secondary) transition-colors cursor-pointer;
+  }
+
+  /* Botão azul */
+  .btn-primary {
+    @apply bg-(--primary) text-white text-sm px-2 py-1 rounded hover:bg-(--text-primary) transition-colors cursor-pointer;
+  }
+
+  /* Botão azul médio */
+  .btn-primary-md {
+    @apply bg-(--primary) text-white text-base px-2 py-2 rounded hover:bg-(--text-primary) transition-colors cursor-pointer;
+  }
+
+  /* Botão azul claro */
+  .btn-info {
+    @apply bg-(--info) text-white text-sm px-2 py-1 rounded hover:bg-(--text-info) transition-colors cursor-pointer;
+  }
+
+  /* Botão verde */
+  .btn-success {
+    @apply bg-(--success) text-white text-sm px-2 py-1 rounded hover:bg-(--text-success) transition-colors cursor-pointer;
+  }
+
+  /* Botão amarelo */
+  .btn-warning {
+    @apply bg-(--warning) text-white text-sm px-2 py-1 rounded hover:bg-(--text-warning) transition-colors cursor-pointer;
+  }
+
+  /* Botão vermelho */
+  .btn-danger {
+    @apply bg-(--danger) text-white text-sm px-2 py-1 rounded hover:bg-(--text-danger) transition-colors cursor-pointer;
+  }
+
+  /* Alinha os botões em linha */
+  .align-icon-btn {
+    @apply flex items-center space-x-1;
+  }
+
+  /****** Fim Botões ******/
+
+  /****** Início Alertas ******/
+  .alert-primary {
+    @apply p-3 my-3 text-sm text-(--text-primary) rounded-lg bg-(--primary-secondary);
+  }
+
+  .alert-secondary {
+    @apply p-3 my-3 text-sm text-(--text-secondary) rounded-lg bg-(--secondary-secondary);
+  }
+
+  .alert-info {
+    @apply p-3 my-3 text-sm text-(--text-info) rounded-lg bg-(--info-secondary);
+  }
+
+  .alert-success {
+    @apply p-3 my-3 text-sm text-(--text-success) rounded-lg bg-(--success-secondary);
+  }
+
+  .alert-warning {
+    @apply p-3 my-3 text-sm text-(--text-warning) rounded-lg bg-(--warning-secondary);
+  }
+
+  .alert-danger {
+    @apply p-3 my-3 text-sm text-(--text-danger) rounded-lg bg-(--danger-secondary);
+  }
+
+  .alert-light {
+    @apply p-3 my-3 text-sm text-(--text-light) rounded-lg bg-(--alert-light-secondary);
+  }
+
+  .alert-dark {
+    @apply p-3 my-3 text-sm text-(--text-dark) rounded-lg bg-(--alert-dark-secondary);
+  }
+
+  /******** Cor fechada ***/
+
+  .alert-dismissible-primary {
+    @apply p-3 my-3 text-sm text-white rounded-lg bg-(--primary);
+  }
+
+  .alert-dismissible-secondary {
+    @apply p-3 my-3 text-sm text-white rounded-lg bg-(--secondary);
+  }
+
+  .alert-dismissible-info {
+    @apply p-3 my-3 text-sm text-white rounded-lg bg-(--info);
+  }
+
+  .alert-dismissible-success {
+    @apply p-3 my-3 text-sm text-white rounded-lg bg-(--success);
+  }
+
+  .alert-dismissible-warning {
+    @apply p-3 my-3 text-sm text-white rounded-lg bg-(--warning);
+  }
+
+  .alert-dismissible-danger {
+    @apply p-3 my-3 text-sm text-white rounded-lg bg-(--danger);
+  }
+
+  .alert-dismissible-light {
+    @apply p-3 my-3 text-sm text-gray-600 rounded-lg bg-(--alert-light);
+  }
+
+  .alert-dismissible-dark {
+    @apply p-3 my-3 text-sm text-white rounded-lg bg-(--alert-dark);
+  }
+
+  /****** Fim Alertas ******/
 }
