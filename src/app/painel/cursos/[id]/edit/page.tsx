@@ -9,7 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 import instance from "@/services/api";
-import Menu from "@/components/Menu";
+import Menu from "@/components/Painel/Menu";
 
 //Importar o Hooks responsável pela proteção de rotas
 import { ProtectedRoute } from "@/components/ProtectedRoute";

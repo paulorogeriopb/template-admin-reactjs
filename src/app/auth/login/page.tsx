@@ -33,7 +33,7 @@ type FormData = { email: string; password: string };
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("next") || "/dashboard";
+  const redirectTo = searchParams.get("next") || "/painel/dashboard";
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

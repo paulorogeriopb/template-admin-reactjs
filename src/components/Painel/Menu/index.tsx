@@ -11,13 +11,13 @@ const Menu = () => {
     <nav>
       <ul>
         <li>
-          <Link href="/">Home</Link>
+          <Link href="/painel/dashboard">Home</Link>
         </li>
         <li>
-          <Link href="/cursos/list">Cursos</Link>
+          <Link href="/painel/cursos/list">Cursos</Link>
         </li>
         <li>
-          <Link href="/users/list">Usuários</Link>
+          <Link href="/painel/users/list">Usuários</Link>
         </li>
         <li>
           <Link href="#" onClick={handleLogout}>

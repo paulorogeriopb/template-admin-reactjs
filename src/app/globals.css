@@ -153,6 +153,164 @@
 
   /****** Fim Login ******/
 
+  /****** Início Navbar ******/
+  /* Estilização do fundo */
+  .bg-dashboard {
+    @apply bg-(--light-secondary) dark:bg-(--dark-secondary) min-h-screen;
+  }
+
+  /* Navbar */
+  .navbar {
+    @apply bg-(--light-primary) px-4 py-2 sm:px-6 shadow-md lg:px-8 dark:bg-(--dark-primary) dark:border-(--sombra);
+  }
+
+  /* Botão de menu mobile */
+  .menu-button {
+    @apply text-(--primary) sm:hidden cursor-pointer;
+  }
+
+  /* Container da Navbar */
+  .navbar-container {
+    @apply flex justify-end items-center;
+  }
+
+  /* Container do usuário */
+  .user-container {
+    @apply ml-auto flex items-center space-x-0;
+  }
+
+  /* Dropdown */
+  .dropdown-button {
+    @apply bg-(--light-primary) px-3 py-2 text-sm text-gray-500 flex items-center cursor-pointer dark:bg-(--dark-primary) dark:text-gray-400;
+  }
+
+  /* Dropdown border */
+  .dropdown-button-border {
+    @apply border-e-2 border-gray-200 dark:border-(--sombra) p-2;
+  }
+
+  .dropdown-content {
+    @apply absolute right-0 z-50 mt-2 rounded-md shadow-lg bg-(--light-primary) w-48 dark:bg-(--dark-primary);
+  }
+
+  .dropdown-item {
+    @apply block w-full px-4 py-2 text-sm text-gray-700 border-b-1 border-gray-300 dark:border-(--sombra) hover:bg-gray-200 focus:bg-gray-100 focus:outline-none hover:rounded-md dark:text-gray-400 dark:hover:bg-(--dark-secondary)  dark:focus:bg-gray-400;
+  }
+
+  /* Ícone do dropdown */
+  .dropdown-icon {
+    @apply ml-2 h-4 w-4;
+  }
+
+  /****** Fim Navbar ******/
+
+  /***** Início do Toggle Theme ****/
+
+  .themeToggle {
+    @apply w-14 h-8 flex items-center bg-gray-300 dark:bg-gray-700 rounded-full p-1 transition-colors duration-300 focus:outline-none;
+  }
+
+  .themeToggleThumb {
+    @apply bg-white dark:bg-gray-900 w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center cursor-pointer;
+  }
+
+  /**** Fim do Toggle Them ****/
+
+  /****** Início Sidebar ******/
+
+  .sidebar {
+    @apply fixed inset-y-0 left-0 w-64 bg-(--light-primary) shadow-md transform -translate-x-full transition-transform duration-300 ease-in-out sm:translate-x-0;
+  }
+
+  .sidebar-open {
+    @apply translate-x-0;
+  }
+
+  .sidebar-container {
+    @apply bg-(--light-primary) relative h-full dark:bg-(--dark-primary);
+  }
+
+  .sidebar-close-button {
+    @apply absolute top-4 right-4 text-gray-500 sm:hidden cursor-pointer;
+  }
+
+  .sidebar-header {
+    @apply flex items-center shadow-xs space-x-2 pl-4 py-3 dark:bg-(--dark-primary);
+  }
+
+  .sidebar-title {
+    @apply text-xl font-bold text-(--default);
+  }
+
+  .sidebar-nav {
+    @apply mt-4;
+  }
+
+  .sidebar-link {
+    @apply px-4 py-3 text-sm text-gray-500 border-b-1 border-gray-200 dark:border-(--sombra)  hover:bg-gray-200 hover:text-(--default) flex items-center space-x-1 dark:text-gray-400 dark:hover:bg-(--dark-secondary) dark:hover:text-(--default);
+  }
+
+  .sidebar-link.active {
+    @apply bg-gray-200 text-(--default) dark:bg-(--dark-secondary) dark:text-(--default)  shadow-xs;
+  }
+
+  .sidebar-danger {
+    @apply px-4 py-2 text-sm text-(--text-danger) border-b-1 border-gray-200 dark:border-(--sombra)  hover:bg-gray-200 hover:text-(--text-danger) flex items-center space-x-1 dark:text-(--text-danger) dark:hover:bg-(--dark-secondary) dark:hover:text-(--text-danger);
+  }
+
+  .sidebar-link.danger {
+    @apply bg-gray-200 text-(--danger) dark:bg-(--danger-secondary) dark:text-(--default)  shadow-xs;
+  }
+
+  /****** Fim Sidebar ******/
+
+  /****** Início Conteúdo Principal ******/
+  .main-content {
+    @apply flex-1 px-4 pb-4 pt-2 ml-0 sm:ml-64;
+  }
+
+  .content-wrapper {
+    @apply mx-auto px-1 sm:px-0 lg:px-0 mb-2;
+  }
+
+  .content-header {
+    @apply flex justify-between items-center;
+  }
+
+  .content-title {
+    @apply text-xl font-semibold text-gray-500 dark:text-gray-400;
+  }
+
+  .breadcrumb {
+    @apply text-sm text-gray-500 dark:text-gray-400;
+  }
+
+  .breadcrumb-link {
+    @apply text-gray-400 hover:no-underline hover:text-(--dark-secondary) dark:hover:text-(--light-primary);
+  }
+
+  .content-box {
+    @apply bg-(--light-primary) shadow-lg dark:text-gray-400 sm:rounded-lg text-gray-900 p-4 dark:bg-(--dark-primary);
+  }
+
+  .content-box-header {
+    @apply flex justify-between items-center border-b-2 border-gray-200 pb-2 mb-3 dark:border-(--sombra);
+  }
+
+  .content-box-title {
+    @apply text-base font-semibold text-gray-500 dark:text-gray-400;
+  }
+
+  .content-box-btn {
+    @apply flex space-x-1;
+  }
+
+  .content-box-body {
+    @apply text-sm p-4  dark:text-gray-400;
+  }
+
+  /****** Fim Conteúdo Principal ******/
+
   /****** Início Botões ******/
 
   .btn-default {

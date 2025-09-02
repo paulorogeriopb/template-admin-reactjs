@@ -5,7 +5,7 @@ import instance from "@/services/api";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { AxiosError } from "axios";
-import Menu from "@/components/Menu";
+import Menu from "@/components/Painel/Menu";
 import Pagination from "@/components/Pagination";
 import DeleteButton from "@/components/DeleteButton";
 
