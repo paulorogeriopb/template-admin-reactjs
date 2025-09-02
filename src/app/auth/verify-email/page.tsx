@@ -6,6 +6,7 @@ import publicApi from "@/services/publicApi";
 import { AxiosError } from "axios";
 import Link from "next/link";
 import Image from "next/image";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function VerifyEmailPage() {
   const router = useRouter();
@@ -110,7 +111,7 @@ export default function VerifyEmailPage() {
 
         <h1 className="title-logo">Nimbus</h1>
         <p className="subtitle-login">Insira o código de verificação</p>
-        {loading && <p>Carregando...</p>}
+        {loading && LoadingSpinner()}
 
         {success ? (
           <p className="alert-success">{success}</p>

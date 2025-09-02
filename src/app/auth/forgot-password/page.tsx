@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import instance from "@/services/api";
 import Image from "next/image";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const schema = yup.object().shape({
   email: yup
@@ -67,6 +68,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="bg-login">
+      {loading && <LoadingSpinner />}
       <div className="card-login">
         <div className="logo-wrapper-login">
           <Link href="/">

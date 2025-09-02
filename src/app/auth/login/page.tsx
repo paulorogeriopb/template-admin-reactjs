@@ -10,6 +10,10 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { AxiosError } from "axios";
 import instance from "@/services/api";
 import Image from "next/image";
+import LoadingSpinner from "@/components/LoadingSpinner";
+
+// Tempo de carregamento
+const MIN_LOADING_TIME = 0; // tempo mínimo em ms
 
 // Schema de validação
 const schema = yup.object().shape({
@@ -68,26 +72,32 @@ export default function LoginPage() {
     setSuccess(null);
     setEmailNotVerified(false);
 
+    const start = Date.now(); // marca o início do loading
+
     try {
       const response = await instance.post("/auth/login", data);
       console.log("Login successful:", response.data);
       localStorage.setItem("token", response.data.token);
-      router.push(redirectTo);
+
+      const elapsed = Date.now() - start;
+      const remaining = MIN_LOADING_TIME - elapsed;
+
+      if (remaining > 0) {
+        setTimeout(() => router.push(redirectTo), remaining);
+      } else {
+        router.push(redirectTo);
+      }
     } catch (err: unknown) {
-      console.log("Login API error:", err);
+      const elapsed = Date.now() - start;
+      const remaining = MIN_LOADING_TIME - elapsed;
 
       if (err instanceof AxiosError && err.response) {
         const apiData = err.response.data;
-        console.log("Login API response message:", apiData.message);
 
-        // Detecta se o email não foi verificado
         if (
           apiData.message ===
           "Você precisa validar o seu e-mail antes de acessar o sistema. Verifique seu e-mail e clique no link de verificação."
         ) {
-          console.log(
-            "Email não verificado detectado! Mostrando botão de reenvio"
-          );
           setEmailNotVerified(true);
         }
 
@@ -95,8 +105,13 @@ export default function LoginPage() {
       } else {
         setError("Erro de conexão com o servidor, tente novamente mais tarde.");
       }
-    } finally {
-      setLoading(false);
+
+      // garante que o loading fique visível pelo tempo mínimo
+      if (remaining > 0) {
+        setTimeout(() => setLoading(false), remaining);
+      } else {
+        setLoading(false);
+      }
     }
   };
 
@@ -150,7 +165,7 @@ export default function LoginPage() {
 
         <h1 className="title-logo">Nimbus</h1>
         <p className="subtitle-login">Área Restrita</p>
-        {loading && <p>Carregando...</p>}
+        {loading && LoadingSpinner()}
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
           {error && <p className="alert-danger">{error}</p>}

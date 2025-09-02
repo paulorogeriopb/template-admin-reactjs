@@ -10,6 +10,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 // Schema para reset de senha
 const passwordSchema = yup.object().shape({
@@ -183,6 +184,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="bg-login">
+      {(loadingCode || loadingPassword) && <LoadingSpinner />}
       <div className="card-login sm:max-w-2xl">
         <div className="logo-wrapper-login">
           <Link href="/">

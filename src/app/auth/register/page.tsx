@@ -9,6 +9,7 @@ import * as yup from "yup";
 import Link from "next/link";
 import { AxiosError } from "axios";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 // Componentes auxiliares
 import Image from "next/image";
@@ -154,7 +155,7 @@ export default function RegisterPage() {
 
         <h1 className="title-login">Registrar</h1>
 
-        {loading && <p>Carregando...</p>}
+        {loading && LoadingSpinner()}
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
           {error && <p className="text-red-500">{error}</p>}
