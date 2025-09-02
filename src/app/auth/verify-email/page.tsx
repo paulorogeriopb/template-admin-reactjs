@@ -7,6 +7,7 @@ import { AxiosError } from "axios";
 import Link from "next/link";
 import Image from "next/image";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import AlertMessage from "@/components/AlertMessage";
 
 export default function VerifyEmailPage() {
   const router = useRouter();
@@ -110,14 +111,16 @@ export default function VerifyEmailPage() {
         </div>
 
         <h1 className="title-logo">Nimbus</h1>
-        <p className="subtitle-login">Insira o código de verificação</p>
+        <p className="subtitle-login">
+          Enviamos um código para o seu e-mail para verificar sua conta.
+        </p>
         {loading && LoadingSpinner()}
 
         {success ? (
-          <p className="alert-success">{success}</p>
+          <AlertMessage type="success" message={success} />
         ) : (
           <>
-            {error && <p className="alert-danger mb-4">{error}</p>}
+            <AlertMessage type="error" message={error} className="mb-4" />
 
             <div className="flex justify-between space-x-2 mb-4">
               {code.map((num, idx) => (

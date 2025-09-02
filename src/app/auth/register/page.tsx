@@ -10,6 +10,7 @@ import Link from "next/link";
 import { AxiosError } from "axios";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import AlertMessage from "@/components/AlertMessage";
 
 // Componentes auxiliares
 import Image from "next/image";
@@ -158,7 +159,7 @@ export default function RegisterPage() {
         {loading && LoadingSpinner()}
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-          {error && <p className="text-red-500">{error}</p>}
+          <AlertMessage type="error" message={error} />
 
           {/* Nome */}
           <div className="form-group-login">

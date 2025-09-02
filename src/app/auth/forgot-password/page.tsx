@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import instance from "@/services/api";
 import Image from "next/image";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import AlertMessage from "@/components/AlertMessage";
 
 const schema = yup.object().shape({
   email: yup
@@ -90,12 +91,12 @@ export default function ForgotPasswordPage() {
 
         {success ? (
           <div className="text-center mt-6">
-            <p className="alert-success">{success}</p>
+            <AlertMessage type="success" message={success} />
             <p>Redirecionando para redefinir a senha...</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {error && <p className="alert-danger">{error}</p>}
+            <AlertMessage type="error" message={error} />
 
             <div className="form-group-login">
               <label htmlFor="email" className="form-label-login">

@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import AlertMessage from "@/components/AlertMessage";
 
 // Schema para reset de senha
 const passwordSchema = yup.object().shape({
@@ -202,9 +203,19 @@ export default function ResetPasswordPage() {
         <p className="title-login">Redifinição de Senha</p>
 
         {/* Mensagens de erro */}
-        {errorCode && !step && <p className="alert-danger mb-4">{errorCode}</p>}
+
+        {errorCode && !step && (
+          <AlertMessage type="error" message={errorCode} />
+        )}
+
         {errorPassword && step && (
-          <p className="alert-danger mb-4">{errorPassword}</p>
+          <AlertMessage type="error" message={errorPassword} />
+        )}
+
+        {(loadingCode || loadingPassword) && (
+          <div className="flex justify-center my-4">
+            <LoadingSpinner />
+          </div>
         )}
 
         {/* Etapa 1: Código */}
@@ -310,7 +321,10 @@ export default function ResetPasswordPage() {
         ) : (
           // Mensagem de sucesso
           <div className="text-center mt-6">
-            <p className="alert-success mb-4">Senha redefinida com sucesso!</p>
+            <AlertMessage
+              type="success"
+              message={"Senha redefinida com sucesso!"}
+            />
             <Link href="/auth/login" className="inline-block w-lg btn-login">
               Ir para login
             </Link>

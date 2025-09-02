@@ -11,6 +11,7 @@ import { AxiosError } from "axios";
 import instance from "@/services/api";
 import Image from "next/image";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import AlertMessage from "@/components/AlertMessage";
 
 // Tempo de carregamento
 const MIN_LOADING_TIME = 0; // tempo mínimo em ms
@@ -168,7 +169,7 @@ export default function LoginPage() {
         {loading && LoadingSpinner()}
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-          {error && <p className="alert-danger">{error}</p>}
+          <AlertMessage type="error" message={error} />
 
           {emailNotVerified && (
             <button
@@ -181,7 +182,7 @@ export default function LoginPage() {
               Reenviar e-mail
             </button>
           )}
-
+          <AlertMessage type="success" message={success} />
           {success && <p className="alert-success">{success}</p>}
 
           <div className="form-group-login">
