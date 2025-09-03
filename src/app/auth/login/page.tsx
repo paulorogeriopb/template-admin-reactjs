@@ -182,8 +182,7 @@ export default function LoginPage() {
               Reenviar e-mail
             </button>
           )}
-          <AlertMessage type="success" message={success} />
-          {success && <p className="alert-success">{success}</p>}
+          {success && <AlertMessage type="success" message={success} />}
 
           <div className="form-group-login">
             <label htmlFor="email" className="form-label-login">

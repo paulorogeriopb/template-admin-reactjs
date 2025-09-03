@@ -5,12 +5,12 @@ import instance from "@/services/api";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { AxiosError } from "axios";
-import Menu from "@/components/Painel/Menu";
 import Pagination from "@/components/Pagination";
 import DeleteButton from "@/components/DeleteButton";
-
-//Importar o Hooks responsável pela proteção de rotas
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Layout from "@/components/Painel/Layout";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { LuCirclePlus, LuEye, LuSquarePen } from "react-icons/lu";
+import AlertMessageDismissible from "@/components/AlertMessageDismissible";
 
 type Curso = {
   id: number;
@@ -74,61 +74,99 @@ export default function CursosList() {
   };
 
   return (
-    <ProtectedRoute>
-      <div>
-        <Menu />
-        <br />
-        <Link href="/cursos/create">Novo Curso</Link>
-        <h1>Lista de Cursos</h1>
-        {loading && <p>Carregando...</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {success && <p style={{ color: "green" }}>{success}</p>}{" "}
-        {/* Mensagem de sucesso */}
-        {!loading && !error && (
-          <>
-            <table border={1} cellPadding={8} cellSpacing={0}>
-              <thead>
-                <tr>
-                  <th>Id</th>
-                  <th>Nome</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cursos.length > 0 ? (
-                  cursos.map((curso) => (
-                    <tr key={curso.id}>
-                      <td>{curso.id}</td>
-                      <td>{curso.name}</td>
-                      <td>
-                        <Link href={`/cursos/${curso.id}`}>Visualizar</Link> -{" "}
-                        <Link href={`/cursos/${curso.id}/edit`}>Editar</Link> -{" "}
-                        <DeleteButton
-                          id={String(curso.id)}
-                          route={`/cursos`}
-                          onSuccess={handleSuccess}
-                          setError={setError}
-                          setSuccess={setSuccess}
-                        />
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={3}>Nenhum curso encontrado</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+    <Layout>
+      <main className="main-content">
+        {/* Título e Trilha de Navegação */}
+        <div className="content-wrapper">
+          <div className="content-header">
+            <h2 className="content-title">Listar Curso</h2>
+            <nav className="breadcrumb">
+              <Link href="/painel/dashboard" className="breadcrumb-link">
+                Dashboard
+              </Link>
+              <span> / </span>
+              <span>Cursos</span>
+            </nav>
+          </div>
+        </div>
 
-            <Pagination
-              currentPage={currentPage}
-              lastPage={lastPage}
-              onPageChange={handlePageChange}
-            />
-          </>
-        )}
-      </div>
-    </ProtectedRoute>
+        <div className="content-box">
+          <div className="content-box-header">
+            <h3 className="content-box-title">Cursos</h3>
+            <div className="content-box-btn">
+              <Link
+                href="/painel/cursos/create"
+                className="btn-success flex items-center space-x-1"
+              >
+                <LuCirclePlus />
+                <span>Novo</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className="content-box-body">
+            {loading && LoadingSpinner()}
+            <AlertMessageDismissible type="error" message={error} />
+
+            {success && (
+              <AlertMessageDismissible type="success" message={success} />
+            )}
+
+            <div className="table-container mt-6">
+              {!loading && !error && (
+                <table className="table">
+                  <thead>
+                    <tr className="table-row-header">
+                      <th className="table-header">ID</th>
+                      <th className="table-header">Nome</th>
+                      <th className="table-header center">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cursos.length > 0 ? (
+                      cursos.map((curso) => (
+                        <tr className="table-row-body" key={curso.id}>
+                          <td className="table-body">{curso.id}</td>
+                          <td className="table-body">{curso.name}</td>
+                          <td className="table-body table-actions">
+                            <Link
+                              href={`/painel/cursos/${curso.id}`}
+                              className="btn-primary  flex items-center gap-2"
+                            >
+                              {" "}
+                              <LuEye /> Visualizar
+                            </Link>
+
+                            <Link
+                              href={`/painel/cursos/${curso.id}/edit`}
+                              className="btn-warning flex items-center gap-2"
+                            >
+                              <LuSquarePen /> Editar
+                            </Link>
+
+                            <DeleteButton
+                              id={String(curso.id)}
+                              route={`/cursos`}
+                              onSuccess={handleSuccess}
+                              setError={setError}
+                              setSuccess={setSuccess}
+                            />
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3}>Nenhum curso encontrado</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+          {/* Fim do Content Box Body */}
+        </div>
+      </main>
+    </Layout>
   );
 }

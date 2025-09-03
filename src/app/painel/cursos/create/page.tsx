@@ -19,10 +19,11 @@ import { useRouter } from "next/navigation";
 // Componentes auxiliares
 import Link from "next/link";
 import instance from "@/services/api"; // sua instância axios configurada
-import Menu from "@/components/Painel/Menu"; // seu menu de navegação
 
-//Importar o Hooks responsável pela proteção de rotas
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Layout from "@/components/Painel/Layout";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { LuPlus, LuSave, LuList } from "react-icons/lu";
+import AlertMessageDismissible from "@/components/AlertMessageDismissible";
 
 // Schema de validação com Yup
 const schema = yup.object().shape({
@@ -98,7 +99,7 @@ export default function CreateCurso() {
       reset(); // limpa formulário
 
       // Redireciona para lista de cursos
-      router.push("/cursos/list");
+      router.push("/painel/cursos/list");
     } catch (err: unknown) {
       if (err instanceof AxiosError && err.response) {
         const data = err.response.data;
@@ -114,55 +115,104 @@ export default function CreateCurso() {
   });
 
   return (
-    <ProtectedRoute>
-      <div>
-        {/* Menu de navegação */}
-        <Menu />
-        <br />
+    <Layout>
+      <main className="main-content">
+        {/* Título e Trilha de Navegação */}
+        <div className="content-wrapper">
+          <div className="content-header">
+            <h2 className="content-title">Curso</h2>
+            <nav className="breadcrumb">
+              <Link href="/painel/dashboard" className="breadcrumb-link">
+                Dashboard
+              </Link>
+              <span> / </span>
+              <Link href="/painel/cursos/list" className="breadcrumb-link">
+                Curso
+              </Link>
+              <span> / </span>
+              <span>Novo</span>
+            </nav>
+          </div>
+        </div>
 
-        {/* Link de voltar */}
-        <Link href="/cursos/list">Voltar</Link>
-        <br />
+        <div className="content-box">
+          <div className="content-box-header">
+            <h3 className="content-box-title">Novo</h3>
+            <div className="content-box-btn">
+              <Link
+                href={`/painel/cursos/list`}
+                className="btn-info  flex items-center gap-2"
+              >
+                <LuList /> Visualizar
+              </Link>
+            </div>
+          </div>
 
-        <h1>Cadastrar Curso</h1>
+          <div className="content-box-body">
+            {loading && LoadingSpinner()}
+            <AlertMessageDismissible type="error" message={error} />
 
-        {/* Feedback visual */}
-        {loading && <p>Carregando...</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {success && <p style={{ color: "green" }}>{success}</p>}
-
-        {/* Formulário */}
-        <form onSubmit={handleSubmit(onsubmit)}>
-          <div>
-            <input
-              type="text"
-              placeholder="Nome do Curso"
-              {...register("name")} // integração com react-hook-form
-            />
-            {/* Mensagem de erro do Yup */}
-            {errors.name && (
-              <p style={{ color: "red" }}>{errors.name.message}</p>
+            {success && (
+              <AlertMessageDismissible type="success" message={success} />
             )}
-          </div>
 
-          <div style={{ marginTop: "1rem" }}>
-            {/* Botão 1: Cadastrar e continuar */}
-            <button type="submit" disabled={loading}>
-              {loading ? "Cadastrando..." : "Continuar Cadastrando"}
-            </button>
+            {/* Formulário */}
+            <form onSubmit={handleSubmit(onsubmit)}>
+              <div className="mb-4">
+                <label htmlFor="name" className="form-label">
+                  Curso
+                </label>
+                <input
+                  type="text"
+                  placeholder="Nome do Curso"
+                  {...register("name")} // integração com react-hook-form
+                  className="form-input"
+                />
+                {/* Mensagem de erro do Yup */}
+                {errors.name && (
+                  <p style={{ color: "red" }}>{errors.name.message}</p>
+                )}
+              </div>
 
-            {/* Botão 2: Cadastrar e voltar */}
-            <button
-              type="button"
-              onClick={handleSubmitAndRedirect}
-              disabled={loading}
-              style={{ marginLeft: "10px" }}
-            >
-              {loading ? "Cadastrando..." : "Cadastrar"}
-            </button>
+              <div className="content-box-footer-btn">
+                {/* Botão 1: Cadastrar e voltar */}
+                <button
+                  type="button"
+                  onClick={handleSubmitAndRedirect}
+                  disabled={loading}
+                  className="btn-success flex items-center space-x-1 "
+                  style={{ marginLeft: "10px" }}
+                >
+                  {loading ? (
+                    "Salvando..."
+                  ) : (
+                    <>
+                      <LuSave className="text-white" />
+                      Salvar
+                    </>
+                  )}
+                </button>
+                {/* Botão 2: Cadastrar e continuar */}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-default flex items-center gap-2"
+                >
+                  {loading ? (
+                    "Cadastrando..."
+                  ) : (
+                    <>
+                      <LuPlus className="text-white" />
+                      Continuar Cadastrando
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
-    </ProtectedRoute>
+        </div>
+      </main>
+    </Layout>
   );
 }

@@ -5,9 +5,11 @@ import { useParams } from "next/navigation";
 import instance from "@/services/api";
 import { AxiosError } from "axios";
 import Link from "next/link";
-import Menu from "@/components/Painel/Menu";
-//Importar o Hooks responsável pela proteção de rotas
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import AlertMessageDismissible from "@/components/AlertMessageDismissible";
+import { LuChevronLeft, LuSquarePen, LuList } from "react-icons/lu";
+
+import Layout from "@/components/Painel/Layout";
 
 type Curso = {
   id: number;
@@ -81,22 +83,91 @@ export default function CursoDetails() {
   }, [id]);
 
   return (
-    <ProtectedRoute>
-      <div>
-        <Menu /> <br />
-        <h1>Detalhes do Curso</h1>
-        {loading && <p>Carregando...</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {!loading && !error && curso && (
-          <div>
-            <p>Id: {curso.id}</p>
-            <p>Nome: {curso.name}</p>
-            <p>Created At: {new Date(curso.created_at).toLocaleString()}</p>
-            <p>Updated At: {new Date(curso.updated_at).toLocaleString()}</p>
+    <Layout>
+      <main className="main-content">
+        {/* Título e Trilha de Navegação */}
+        <div className="content-wrapper">
+          <div className="content-header">
+            <h2 className="content-title">Curso</h2>
+            <nav className="breadcrumb">
+              <Link href="/painel/dashboard" className="breadcrumb-link">
+                Dashboard
+              </Link>
+              <span> / </span>
+              <Link href="/painel/cursos/list" className="breadcrumb-link">
+                Curso
+              </Link>
+              <span> / </span>
+              <span>Visualizar</span>
+            </nav>
           </div>
-        )}
-        <Link href="/cursos/list">Voltar</Link>
-      </div>
-    </ProtectedRoute>
+        </div>
+
+        <div className="content-box">
+          <div className="content-box-header">
+            <h3 className="content-box-title">Detalhes do Curso</h3>
+            <div className="content-box-btn">
+              <Link
+                href={`/painel/cursos/list`}
+                className="btn-info  flex items-center gap-2"
+              >
+                {" "}
+                <LuList /> Visualizar
+              </Link>
+
+              <Link
+                href={`/painel/cursos/${curso?.id}/edit`}
+                className="btn-warning flex items-center gap-2"
+              >
+                <LuSquarePen /> Editar
+              </Link>
+            </div>
+          </div>
+
+          <div className="content-box-body">
+            {loading && LoadingSpinner()}
+            <AlertMessageDismissible type="error" message={error} />
+            {!loading && !error && curso && (
+              <div>
+                <div className="detail-box">
+                  <div className="mb-1">
+                    <span className="title-detail-content">ID: </span>
+                    <span className="detail-content">{curso.id}</span>
+                  </div>
+
+                  <div className="mb-1">
+                    <span className="title-detail-content">Nome: </span>
+                    <span className="detail-content">{curso.name}</span>
+                  </div>
+
+                  <div className="mb-1">
+                    <span className="title-detail-content">Created At: </span>
+                    <span className="detail-content">
+                      {new Date(curso.created_at).toLocaleString()}
+                    </span>
+                  </div>
+
+                  <div className="mb-1">
+                    <span className="title-detail-content">Updated At: </span>
+                    <span className="detail-content">
+                      {new Date(curso.updated_at).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="content-box-btn">
+              <Link
+                href="/painel/cursos/list"
+                className="btn-default flex items-center space-x-1 "
+              >
+                <LuChevronLeft />
+                <span>Voltar</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </main>
+    </Layout>
   );
 }

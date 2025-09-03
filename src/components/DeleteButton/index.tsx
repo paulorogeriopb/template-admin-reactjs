@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AxiosError } from "axios";
 import instance from "@/services/api";
+import { LuTrash2 } from "react-icons/lu";
 
 interface DeleteButtonProps {
   id: string; // ID do item a ser deletado
@@ -57,8 +58,19 @@ const DeleteButton = ({
   };
 
   return (
-    <button onClick={handleDelete} disabled={loading}>
-      {loading ? "Excluindo..." : "Deletar"}
+    <button
+      onClick={handleDelete}
+      disabled={loading}
+      className="btn-danger hidden md:inline-flex items-center gap-2"
+    >
+      {loading ? (
+        "Excluindo..."
+      ) : (
+        <>
+          <LuTrash2 className="text-white" />
+          Deletar
+        </>
+      )}
     </button>
   );
 };

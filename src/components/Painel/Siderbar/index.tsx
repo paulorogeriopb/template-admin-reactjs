@@ -29,15 +29,15 @@ const Sidebar = () => {
           <Image
             src="/images/logo-v.png"
             alt="Logo"
-            width={120} // defina largura
-            height={40} // e altura
+            width={160} // defina largura
+            height={80} // e altura
             className="logo"
             priority // opcional: carrega logo imediatamente
           />
         </div>
         <nav className="sidebar-nav">
           {/* Ícone home (Heroicons) */}
-          <Link href="/painel/dashboard" className="sidebar-link active">
+          <Link href="/painel/dashboard" className="sidebar-link">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

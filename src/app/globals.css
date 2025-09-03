@@ -305,50 +305,154 @@
     @apply flex space-x-1;
   }
 
+  .content-box-footer-btn {
+    @apply flex justify-end items-center space-x-2;
+  }
+
   .content-box-body {
     @apply text-sm p-4  dark:text-gray-400;
   }
 
   /****** Fim Conteúdo Principal ******/
 
+  /****** Inicio Tabela Listar Registros ******/
+  .table-container {
+    @apply overflow-hidden bg-white shadow-sm dark:bg-(--dark-secondary);
+  }
+
+  .table {
+    @apply min-w-full divide-y divide-gray-200 border-separate border-spacing-0 dark:divide-(--dark-primary);
+  }
+
+  .table-row-header {
+    @apply bg-gray-50 dark:bg-(--table-header);
+  }
+
+  .table-header {
+    @apply px-6 py-3 text-left text-sm font-medium text-gray-500 tracking-wider border-b border-gray-200 dark:border-b-(--dark-primary) dark:text-gray-400;
+  }
+
+  .table-header.center {
+    @apply text-center;
+  }
+
+  .table-body {
+    @apply px-6 py-2 text-sm text-gray-950 border-b border-gray-200 dark:text-gray-400 dark:border-b-(--dark-primary);
+  }
+
+  .table-row-body {
+    @apply hover:bg-gray-50 dark:hover:bg-(--table-hover);
+  }
+
+  .table-actions {
+    @apply text-center space-x-1 flex justify-center items-center;
+  }
+
+  .table-actions a {
+    @apply inline-block;
+  }
+
+  /****** Fim Tabela Listar Registros ******/
+
+  /****** Início Formulário ******/
+
+  /* Label dos inputs */
+  .form-label {
+    @apply text-gray-600 block text-sm font-semibold dark:text-gray-400;
+  }
+
+  /* Input padrão */
+  .form-input {
+    @apply border p-2 h-14 text-base w-full mt-1 rounded-xl border-gray-200 shadow-sm focus:border-gray-300 focus:ring focus:ring-gray-200 focus:outline-none dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400;
+  }
+
+  /* Estilização do label 
+  .form-label {
+    @apply text-gray-700 block text-sm font-medium dark:text-gray-400;
+  }*/
+
+  /* Estilização do input */
+  /*
+  .form-input {
+    @apply mt-1 w-full p-3 pr-10 text-gray-600 rounded-xl border 
+         border-gray-300 
+         focus:border-gray-300 
+         focus:ring-2 focus:ring-(--default) focus:outline-none 
+         px-3 py-5 
+         dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400;
+  }*/
+
+  /* vazio → cinza 
+  .form-input:placeholder-shown {
+    @apply bg-gray-100 ;
+       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }*/
+
+  /* preenchido → branco 
+  .form-input:not(:placeholder-shown) {
+    @apply bg-white;
+       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }*/
+
+  /****** Fim Formulário ******/
+
+  /****** Início Detalhes registro ******/
+
+  /* Caixa para apresentar os detalhes do registro */
+  .detail-box {
+    @apply text-gray-700;
+  }
+
+  /* Detalhes do registro */
+  .title-detail-content {
+    @apply font-semibold dark:text-gray-400;
+  }
+
+  /* Detalhes do registro */
+  .detail-content {
+    @apply dark:text-gray-300;
+  }
+
+  /****** Fim Detalhes registro ******/
+
   /****** Início Botões ******/
 
   .btn-default {
-    @apply bg-(--default) text-white text-sm px-2 py-1 rounded hover:bg-(--default-secondary) transition-colors cursor-pointer;
+    @apply bg-(--default) text-white text-sm px-2 py-1 rounded hover:bg-(--default-secondary) transition-colors cursor-pointer shadow-md;
   }
 
   .btn-default-md {
-    @apply bg-(--default) text-white text-sm px-2 py-2 rounded hover:bg-(--default-secondary) transition-colors cursor-pointer;
+    @apply bg-(--default) text-white text-sm px-2 py-2 rounded hover:bg-(--default-secondary) transition-colors cursor-pointer shadow-md;
   }
 
   /* Botão azul */
   .btn-primary {
-    @apply bg-(--primary) text-white text-sm px-2 py-1 rounded hover:bg-(--text-primary) transition-colors cursor-pointer;
+    @apply bg-(--primary) text-white text-sm px-2 py-1 rounded hover:bg-(--text-primary) transition-colors cursor-pointer shadow-md;
   }
 
   /* Botão azul médio */
   .btn-primary-md {
-    @apply bg-(--primary) text-white text-base px-2 py-2 rounded hover:bg-(--text-primary) transition-colors cursor-pointer;
+    @apply bg-(--primary) text-white text-base px-2 py-2 rounded hover:bg-(--text-primary) transition-colors cursor-pointer shadow-md;
   }
 
   /* Botão azul claro */
   .btn-info {
-    @apply bg-(--info) text-white text-sm px-2 py-1 rounded hover:bg-(--text-info) transition-colors cursor-pointer;
+    @apply bg-(--info) text-white text-sm px-2 py-1 rounded hover:bg-(--text-info) transition-colors cursor-pointer shadow-md;
   }
 
   /* Botão verde */
   .btn-success {
-    @apply bg-(--success) text-white text-sm px-2 py-1 rounded hover:bg-(--text-success) transition-colors cursor-pointer;
+    @apply bg-(--success) text-white text-sm px-2 py-1 rounded hover:bg-(--text-success) transition-colors cursor-pointer shadow-md;
   }
 
   /* Botão amarelo */
   .btn-warning {
-    @apply bg-(--warning) text-white text-sm px-2 py-1 rounded hover:bg-(--text-warning) transition-colors cursor-pointer;
+    @apply bg-(--warning) text-white text-sm px-2 py-1 rounded hover:bg-(--text-warning) transition-colors cursor-pointer shadow-md;
   }
 
   /* Botão vermelho */
   .btn-danger {
-    @apply bg-(--danger) text-white text-sm px-2 py-1 rounded hover:bg-(--text-danger) transition-colors cursor-pointer;
+    @apply bg-(--danger) text-white text-sm px-2 py-1 rounded hover:bg-(--text-danger) transition-colors cursor-pointer shadow-md;
   }
 
   /* Alinha os botões em linha */
