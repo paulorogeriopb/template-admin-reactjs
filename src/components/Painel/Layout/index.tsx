@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 //import Menu from "@/components/Painel/Menu";
 
@@ -10,14 +10,16 @@ import Sidebar from "../../Painel/Siderbar";
 import { ProtectedRoute } from "../../ProtectedRoute";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <ProtectedRoute>
       <div className="bg-dashboard">
         {/* Navbar */}
-        <Navbar />
+        <Navbar setIsOpen={setIsOpen} />
         {/* Content */}
         <div className="flex">
-          <Sidebar />
+          <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
           {children}
         </div>
       </div>

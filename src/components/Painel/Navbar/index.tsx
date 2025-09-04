@@ -1,19 +1,47 @@
 "use client";
 
-import React from "react";
-//import { useRouter } from "next/navigation";
+import React, { useRef, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-const handleLogout = () => {
-  localStorage.removeItem("token");
-  window.location.href = "/auth/login";
-};
+const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
+  const router = useRouter();
 
-export default function Navbar() {
+  //Controlar o  dropdown
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+
+    //Adicionar um evento e limpar
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/auth/login");
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <button id="toggleSidebar" className="menu-button">
+        <button
+          id="toggleSidebar"
+          className="menu-button"
+          onClick={() => setIsOpen(true)}
+        >
           <svg
             className="h-6 w-6"
             stroke="currentColor"
@@ -66,8 +94,12 @@ export default function Navbar() {
               </div>
             </button>
           </div>
-          <div className="relative">
-            <button id="userDropdownButton" className="dropdown-button">
+          <div ref={dropdownRef}>
+            <button
+              id="userDropdownButton"
+              className="dropdown-button"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
               Usuário
               <svg
                 className="dropdown-icon"
@@ -82,33 +114,40 @@ export default function Navbar() {
                 />
               </svg>
             </button>
+            {dropdownOpen && (
+              <div id="dropdownContent" className="dropdown-content">
+                <Link href="#" className="dropdown-item">
+                  Perfil
+                </Link>
 
-            <div id="dropdownContent" className="dropdown-content hidden">
-              <Link href="#" className="dropdown-item">
-                Perfil
-              </Link>
-
-              <Link href="#" onClick={handleLogout} className="sidebar-danger">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="size-4"
+                <Link
+                  href="#"
+                  onClick={handleLogout}
+                  className="sidebar-danger"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                  />
-                </svg>
-                <span>Sair</span>
-              </Link>
-            </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                    />
+                  </svg>
+                  <span>Sair</span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
     </nav>
   );
-}
+};
+
+export default Navbar;

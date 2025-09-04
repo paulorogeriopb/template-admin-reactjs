@@ -1,16 +1,38 @@
 "use client";
 
 import React from "react";
-//import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
-const Sidebar = () => {
+const Sidebar = ({
+  isOpen,
+  setIsOpen,
+}: {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}) => {
+  const router = useRouter();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/auth/login");
+  };
+
   return (
-    <aside id="sidebar" className="sidebar">
+    <aside
+      id="sidebar"
+      className={`sidebar sm:translate-x-0 ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
       {/* Sidebar */}
+
       <div className="sidebar-container">
-        <button id="closeSidebar" className="sidebar-close-button">
+        <button
+          id="closeSidebar"
+          className="sidebar-close-button"
+          onClick={() => setIsOpen(false)}
+        >
           <svg
             className="h-6 w-6"
             stroke="currentColor"
@@ -131,7 +153,7 @@ const Sidebar = () => {
             <span>Botões</span>
           </Link>
 
-          <Link href="index.html" className="sidebar-link">
+          <Link href="#" onClick={handleLogout} className="sidebar-link">
             {/* Ícone arrow-right-circle (Heroicons) */}
             <svg
               xmlns="http://www.w3.org/2000/svg"

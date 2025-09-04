@@ -7,12 +7,11 @@ import * as yup from "yup";
 import { AxiosError } from "axios";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-
 import instance from "@/services/api";
-import Menu from "@/components/Painel/Menu";
-
-//Importar o Hooks responsável pela proteção de rotas
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Layout from "@/components/Painel/Layout";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { LuPlus, LuSave, LuList } from "react-icons/lu";
+import AlertMessageDismissible from "@/components/AlertMessageDismissible";
 
 // Schema de validação com Yup
 const schema = yup.object().shape({
@@ -79,7 +78,7 @@ export default function EditCurso() {
     try {
       const response = await instance.put(`/cursos/${id}`, data);
       setSuccess(response.data.message || "Curso atualizado com sucesso!");
-      if (redirectAfterSave) router.push("/cursos/list");
+      if (redirectAfterSave) router.push("/painel/cursos/list");
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         setError(
@@ -98,47 +97,104 @@ export default function EditCurso() {
   };
 
   return (
-    <ProtectedRoute>
-      <div>
-        <Menu />
-        <br />
-        <Link href="/cursos/list">Voltar</Link>
-        <br />
+    <Layout>
+      <main className="main-content">
+        {/* Título e Trilha de Navegação */}
+        <div className="content-wrapper">
+          <div className="content-header">
+            <h2 className="content-title">Curso</h2>
+            <nav className="breadcrumb">
+              <Link href="/painel/dashboard" className="breadcrumb-link">
+                Dashboard
+              </Link>
+              <span> / </span>
+              <Link href="/painel/cursos/list" className="breadcrumb-link">
+                Curso
+              </Link>
+              <span> / </span>
+              <span>Editar</span>
+            </nav>
+          </div>
+        </div>
 
-        <h1>Editar Curso</h1>
+        <div className="content-box">
+          <div className="content-box-header">
+            <h3 className="content-box-title">Editar</h3>
+            <div className="content-box-btn">
+              <Link
+                href={`/painel/cursos/list`}
+                className="btn-info  flex items-center gap-2"
+              >
+                <LuList /> Visualizar
+              </Link>
+            </div>
+          </div>
 
-        {loading && <p>Carregando...</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {success && <p style={{ color: "green" }}>{success}</p>}
+          <div className="content-box-body">
+            {loading && LoadingSpinner()}
+            <AlertMessageDismissible type="error" message={error} />
 
-        <form onSubmit={handleSubmit((data) => onSubmit(data, false))}>
-          <div>
-            <input
-              type="text"
-              placeholder="Nome do Curso"
-              {...register("name")}
-            />
-            {errors.name && (
-              <p style={{ color: "red" }}>{errors.name.message}</p>
+            {success && (
+              <AlertMessageDismissible type="success" message={success} />
             )}
-          </div>
 
-          <div style={{ marginTop: "1rem" }}>
-            <button type="submit" disabled={loading}>
-              {loading ? "Editando..." : "Continuar Editando"}
-            </button>
+            {/* Formulário */}
+            <form onSubmit={handleSubmit((data) => onSubmit(data, false))}>
+              <div className="mb-4">
+                <label htmlFor="name" className="form-label">
+                  Curso
+                </label>
+                <input
+                  type="text"
+                  placeholder="Nome do Curso"
+                  {...register("name")} // integração com react-hook-form
+                  className="form-input"
+                />
+                {/* Mensagem de erro do Yup */}
+                {errors.name && (
+                  <p style={{ color: "red" }}>{errors.name.message}</p>
+                )}
+              </div>
 
-            <button
-              type="button"
-              onClick={handleSubmit((data) => onSubmit(data, true))}
-              disabled={loading}
-              style={{ marginLeft: "10px" }}
-            >
-              {loading ? "Editando..." : "Salvar"}
-            </button>
+              <div className="content-box-footer-btn">
+                {/* Botão 1: Cadastrar e voltar */}
+                <button
+                  type="button"
+                  onClick={handleSubmit((data) => onSubmit(data, true))}
+                  disabled={loading}
+                  className="btn-success flex items-center space-x-1 "
+                  style={{ marginLeft: "10px" }}
+                >
+                  {loading ? (
+                    "Salvando..."
+                  ) : (
+                    <>
+                      <LuSave className="text-white" />
+                      Salvar
+                    </>
+                  )}
+                </button>
+                {/* Botão 2: Cadastrar e continuar */}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-default flex items-center gap-2"
+                >
+                  {loading ? (
+                    "Editando..."
+                  ) : (
+                    <>
+                      <LuPlus className="text-white" />
+                      Continuar Editando
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
-    </ProtectedRoute>
+        </div>
+      </main>
+    </Layout>
   );
 }

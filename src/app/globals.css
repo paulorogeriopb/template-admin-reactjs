@@ -166,7 +166,7 @@
 
   /* Botão de menu mobile */
   .menu-button {
-    @apply text-(--primary) sm:hidden cursor-pointer;
+    @apply text-(--default) sm:hidden cursor-pointer;
   }
 
   /* Container da Navbar */
@@ -219,7 +219,8 @@
   /****** Início Sidebar ******/
 
   .sidebar {
-    @apply fixed inset-y-0 left-0 w-64 bg-(--light-primary) shadow-md transform -translate-x-full transition-transform duration-300 ease-in-out sm:translate-x-0;
+    @apply fixed inset-y-0 left-0 w-64 bg-(--light-primary) shadow-md transform transition-transform
+     duration-300 ease-in-out;
   }
 
   .sidebar-open {
