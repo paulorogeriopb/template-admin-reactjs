@@ -79,7 +79,7 @@ export default function VerifyEmailPage() {
         code: codeStr,
       });
       setSuccess(response.data.message || "E-mail verificado com sucesso!");
-      setTimeout(() => router.push("/auth/login"), 10000);
+      setTimeout(() => router.push("/auth/login"), 8000);
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         const data = err.response?.data;
@@ -97,7 +97,7 @@ export default function VerifyEmailPage() {
 
   return (
     <div className="bg-login">
-      <div className="card-login sm:max-w-2xl">
+      <div className="card-login max-w-md sm:max-w-2xl mx-auto px-4 sm:px-8">
         <div className="logo-wrapper-login">
           <Link href="/">
             <Image
@@ -111,9 +111,11 @@ export default function VerifyEmailPage() {
         </div>
 
         <h1 className="title-logo">Nimbus</h1>
-        <p className="subtitle-login">
-          Enviamos um código para o seu e-mail para verificar sua conta.
-        </p>
+        {!success && (
+          <p className="subtitle-login">
+            Enviamos um código para o seu e-mail.
+          </p>
+        )}
         {loading && LoadingSpinner()}
 
         {success ? (
@@ -122,7 +124,7 @@ export default function VerifyEmailPage() {
           <>
             <AlertMessage type="error" message={error} className="mb-4" />
 
-            <div className="flex justify-between space-x-2 mb-4">
+            <div className="flex justify-between gap-2 sm:gap-4 mb-4">
               {code.map((num, idx) => (
                 <input
                   key={idx}
@@ -133,14 +135,13 @@ export default function VerifyEmailPage() {
                   onChange={(e) => handleChange(e, idx)}
                   onKeyDown={(e) => handleKeyDown(e, idx)}
                   onPaste={handlePaste}
-                  className={`w-24 h-24 text-center text-shadow-2xs shadow-md text-4xl rounded-lg text-white border 
-  ${error ? "border-red-500" : ""} 
-  focus:outline-none transition-all duration-300`}
+                  className={`flex-1 min-w-[2.5rem] max-w-[4rem] h-20 sm:h-22 text-center text-shadow-2xs shadow-md text-3xl sm:text-4xl rounded-lg text-white border 
+    ${error ? "border-red-500" : "border-[#32a2b9]"} 
+    focus:outline-none transition-all duration-300`}
                   style={{
                     backgroundColor: "#298ba1",
-                    borderColor: error ? undefined : "#32a2b9",
-                    outlineColor: "#32a2b9", // para foco no Chrome
-                    boxShadow: "0 0 0 2px #32a2b9", // simula focus:ring
+                    outlineColor: "#32a2b9",
+                    boxShadow: "0 0 0 2px #32a2b9",
                   }}
                 />
               ))}

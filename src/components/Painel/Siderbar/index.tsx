@@ -153,7 +153,14 @@ const Sidebar = ({
             <span>Botões</span>
           </Link>
 
-          <Link href="#" onClick={handleLogout} className="sidebar-link">
+          <Link
+            href="/auth/login"
+            onClick={(e) => {
+              e.preventDefault(); // impede a navegação automática
+              handleLogout(); // executa sua função de logout
+            }}
+            className="sidebar-link"
+          >
             {/* Ícone arrow-right-circle (Heroicons) */}
             <svg
               xmlns="http://www.w3.org/2000/svg"

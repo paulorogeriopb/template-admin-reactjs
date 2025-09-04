@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
         router.push(
           `/auth/reset-password?email=${encodeURIComponent(data.email)}`
         );
-      }, 1500);
+      }, 1800);
     } catch (err: unknown) {
       if (err instanceof AxiosError && err.response) {
         const data = err.response.data;
@@ -92,7 +92,9 @@ export default function ForgotPasswordPage() {
         {success ? (
           <div className="text-center mt-6">
             <AlertMessage type="success" message={success} />
-            <p>Redirecionando para redefinir a senha...</p>
+            <p className="subtitle-login">
+              Redirecionando para redefinir a senha...
+            </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

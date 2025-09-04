@@ -97,7 +97,7 @@
   }
 
   .subtitle-login {
-    @apply text-center text-gray-600 mb-4;
+    @apply text-center text-gray-600 mb-4 dark:text-gray-300;
   }
 
   /* Margem superior para os campos */
@@ -121,7 +121,7 @@
          focus:border-gray-300 
          focus:ring-2 focus:ring-(--default) focus:outline-none 
          px-3 py-3 
-         dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400;
+         dark:border-gray-600 dark:text-gray-500 dark:placeholder-gray-400;
   }
 
   /* vazio → cinza */
@@ -207,7 +207,7 @@
   /***** Início do Toggle Theme ****/
 
   .themeToggle {
-    @apply w-14 h-8 flex items-center bg-gray-300 dark:bg-gray-700 rounded-full p-1 transition-colors duration-300 focus:outline-none;
+    @apply w-8 h-8 flex items-center bg-gray-300 dark:bg-gray-700 rounded-full p-1 transition-colors duration-300 focus:outline-none;
   }
 
   .themeToggleThumb {

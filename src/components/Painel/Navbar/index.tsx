@@ -4,13 +4,18 @@ import React, { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+import { useDarkMode } from "@/components/DarkMode";
+
 const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
   const router = useRouter();
 
-  //Controlar o  dropdown
+  // dropdown
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // tema
+  const { isDark, toggleTheme } = useDarkMode();
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -20,13 +25,8 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
         setDropdownOpen(false);
       }
     }
-
-    //Adicionar um evento e limpar
     document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogout = () => {
@@ -37,6 +37,7 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
+        {/* Botão sidebar */}
         <button
           id="toggleSidebar"
           className="menu-button"
@@ -44,8 +45,8 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
         >
           <svg
             className="h-6 w-6"
-            stroke="currentColor"
             fill="none"
+            stroke="currentColor"
             viewBox="0 0 24 24"
           >
             <path
@@ -56,18 +57,27 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
             />
           </svg>
         </button>
+
+        {/* User / Theme */}
         <div className="user-container">
+          {/* Toggle theme */}
           <div className="relative dropdown-button-border">
-            <button id="themeToggle" className="themeToggle">
+            <button
+              id="themeToggle"
+              className="themeToggle"
+              onClick={toggleTheme}
+            >
               <div id="themeToggleThumb" className="themeToggleThumb">
+                {/* Lua */}
                 <svg
-                  id="iconMoon"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
-                  className="w-4 h-4 text-yellow-400 dark:hidden"
+                  className={`w-4 h-4 text-yellow-400 ${
+                    isDark ? "hidden" : "block"
+                  }`}
                 >
                   <path
                     strokeLinecap="round"
@@ -75,15 +85,16 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
                     d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
                   />
                 </svg>
-
+                {/* Sol */}
                 <svg
-                  id="iconSun"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
-                  className="w-4 h-4 text-yellow-300 hidden dark:block"
+                  className={`w-4 h-4 text-yellow-300 ${
+                    isDark ? "block" : "hidden"
+                  }`}
                 >
                   <path
                     strokeLinecap="round"
@@ -94,6 +105,8 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
               </div>
             </button>
           </div>
+
+          {/* Dropdown usuário */}
           <div ref={dropdownRef}>
             <button
               id="userDropdownButton"
@@ -119,11 +132,13 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
                 <Link href="#" className="dropdown-item">
                   Perfil
                 </Link>
-
                 <Link
-                  href="#"
-                  onClick={handleLogout}
-                  className="sidebar-danger"
+                  href="/auth/login"
+                  onClick={(e) => {
+                    e.preventDefault(); // impede a navegação automática
+                    handleLogout(); // executa sua função de logout
+                  }}
+                  className="sidebar-danger flex items-center gap-2"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

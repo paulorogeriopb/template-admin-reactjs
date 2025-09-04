@@ -155,6 +155,9 @@ export default function RegisterPage() {
         </div>
 
         <h1 className="title-login">Registrar</h1>
+        <p className="subtitle-login">
+          Crie sua conta para acessar nossa plataforma
+        </p>
 
         {loading && LoadingSpinner()}
 
@@ -270,7 +273,7 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <p className="mt-4 text-center text-gray-700">
+        <p className="mt-4 text-center text-gray-700 dark:text-gray-400">
           Já tem uma conta?{" "}
           <Link href="/auth/login">
             <span className="link-login">Entrar</span>

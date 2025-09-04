@@ -186,7 +186,7 @@ export default function ResetPasswordPage() {
   return (
     <div className="bg-login">
       {(loadingCode || loadingPassword) && <LoadingSpinner />}
-      <div className="card-login sm:max-w-2xl">
+      <div className="card-login max-w-md sm:max-w-2xl mx-auto px-4 sm:px-8">
         <div className="logo-wrapper-login">
           <Link href="/">
             <Image
@@ -200,7 +200,7 @@ export default function ResetPasswordPage() {
         </div>
 
         <h1 className="title-logo">Nimbus</h1>
-        <p className="title-login">Redifinição de Senha</p>
+        <p className="subtitle-login">Redifinição de Senha</p>
 
         {/* Mensagens de erro */}
 
@@ -221,7 +221,7 @@ export default function ResetPasswordPage() {
         {/* Etapa 1: Código */}
         {!step && !success ? (
           <>
-            <div className="flex justify-between space-x-2 mb-4">
+            <div className="flex justify-between gap-2 sm:gap-4 mb-4">
               {code.map((num, idx) => (
                 <input
                   key={idx}
@@ -232,13 +232,13 @@ export default function ResetPasswordPage() {
                   onChange={(e) => handleChange(e, idx)}
                   onKeyDown={(e) => handleKeyDown(e, idx)}
                   onPaste={handlePaste}
-                  className={`w-16 h-20 text-center text-4xl rounded-lg text-white border 
-  ${errorCode ? "border-red-500" : ""} 
-  focus:outline-none transition-all duration-300`}
+                  className={`flex-1 min-w-[2.5rem] max-w-[4rem] h-20 sm:h-22 text-center text-shadow-2xs shadow-md text-3xl sm:text-4xl rounded-lg text-white border 
+    ${errorCode ? "border-red-500" : "border-[#32a2b9]"} 
+    focus:outline-none transition-all duration-300`}
                   style={{
                     backgroundColor: "#298ba1",
-                    borderColor: errorCode ? undefined : "#32a2b9",
-                    boxShadow: errorCode ? undefined : "0 0 0 2px #32a2b9", // simula focus:ring
+                    outlineColor: "#32a2b9",
+                    boxShadow: "0 0 0 2px #32a2b9",
                   }}
                 />
               ))}
@@ -325,7 +325,7 @@ export default function ResetPasswordPage() {
               type="success"
               message={"Senha redefinida com sucesso!"}
             />
-            <Link href="/auth/login" className="inline-block w-lg btn-login">
+            <Link href="/auth/login" className="w-48 mx-auto block btn-login">
               Ir para login
             </Link>
           </div>
