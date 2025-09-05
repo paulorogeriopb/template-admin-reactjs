@@ -1,40 +1,34 @@
 import { execSync } from "child_process";
 
-// Pega a última mensagem do commit
-let lastCommitMessage = execSync("git log -1 --pretty=%B", {
-  encoding: "utf-8",
-}).trim();
+// Pega argumento de versão (minor, major, patch)
+const releaseArg = process.argv[2] || "";
 
-// Remove emojis e prefixos como "🔧 chore(teste): "
-lastCommitMessage = lastCommitMessage.replace(/^.*?\(\s*.*?\):\s*/, "").trim();
+// Função para extrair a mensagem limpa do último commit
+function getLastCommitMessage() {
+  // Pega o último commit feito
+  const rawMessage = execSync("git log -1 --pretty=%B", {
+    encoding: "utf-8",
+  }).trim();
 
-// Se estiver vazia, coloca uma mensagem padrão
-if (!lastCommitMessage) {
-  lastCommitMessage = "Nova versão";
+  // Remove emoji e tipo de commit do Commitizen
+  // Ex.: ✨ feat(teste): adicionar login  =>  adicionar login
+  const cleanMessage = rawMessage.replace(
+    /^[^\w]*(feat|fix|chore|docs|style|refactor|test|perf|ci|build)\([^\)]*\):\s*/,
+    ""
+  );
+
+  return cleanMessage || "Nova versão";
 }
 
-// Atualiza versão com standard-version sem commit/tag automáticos
-execSync("npx standard-version --skip.commit --skip.tag", { stdio: "inherit" });
+const releaseMsg = getLastCommitMessage();
 
-// Pega a nova versão do package.json
-const packageJson = JSON.parse(
-  execSync("cat package.json", { encoding: "utf-8" })
-);
-const newVersion = packageJson.version;
+console.log("Mensagem do release:", releaseMsg);
 
-// Adiciona arquivos ao commit
-execSync("git add package.json package-lock.json CHANGELOG.md", {
-  stdio: "inherit",
-});
+// Cria a release de verdade com a mensagem limpa
+let cmd = `npx standard-version --releaseCommitMessageFormat "chore(release): ${releaseMsg}"`;
 
-// Cria commit da release usando a mensagem limpa
-execSync(`git commit -m "${lastCommitMessage}"`, { stdio: "inherit" });
+if (releaseArg) {
+  cmd += ` --release-as ${releaseArg}`;
+}
 
-// Cria tag usando apenas a mensagem limpa
-execSync(`git tag -a "v${newVersion}" -m "${lastCommitMessage}"`, {
-  stdio: "inherit",
-});
-
-console.log(
-  `Release v${newVersion} criada com mensagem: "${lastCommitMessage}"`
-);
+execSync(cmd, { stdio: "inherit" });
