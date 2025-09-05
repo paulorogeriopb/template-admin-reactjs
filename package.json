@@ -9,7 +9,6 @@
     "lint": "eslint",
     "prepare": "husky install",
     "commit": "cz",
-    "release": "standard-version",
     "release:msg": "node release-with-msg.js",
     "release:push": "npm run release:msg && git push && git push --tags",
     "release:minor:push": "npm run release:msg minor && git push && git push --tags",

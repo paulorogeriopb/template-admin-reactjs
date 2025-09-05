@@ -3,26 +3,18 @@ const { execSync } = require("child_process");
 // Pega o argumento da versão (minor, major, patch)
 const releaseArg = process.argv[2] || "";
 
-// Gera o release sem commit/push automático
-let cmd = "npx standard-version --dry-run";
+// Comando base para standard-version
+let cmd = "npx standard-version";
 
+// Adiciona --release-as se passado (minor, major, patch)
 if (releaseArg) {
   cmd += ` --release-as ${releaseArg}`;
 }
 
-// Executa o standard-version em dry-run e captura a saída
-const output = execSync(cmd, { encoding: "utf-8" });
+// Define o formato do commit de release para pegar o último commit
+cmd += ` --releaseCommitMessageFormat "chore(release): {{currentTag}} - {{latestCommitMessage}}"`;
 
-// Extrai a linha do commit de release
-const match = output.match(/chore\(release\): .+/);
-const releaseMsg = match ? match[0] : `chore(release): new version`;
+// Executa o standard-version de verdade
+execSync(cmd, { stdio: "inherit" });
 
-console.log("Mensagem do release:", releaseMsg);
-
-// Cria o release de verdade com a mensagem capturada
-execSync(
-  `npx standard-version --message "${releaseMsg}" ${
-    releaseArg ? "--release-as " + releaseArg : ""
-  }`,
-  { stdio: "inherit" }
-);
+console.log("Release criada com sucesso!");
