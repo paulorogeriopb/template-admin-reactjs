@@ -31,3 +31,4 @@ if (releaseArg) {
 }
 
 execSync(cmd, { stdio: "inherit" });
+console.log("Release criado com sucesso!");
