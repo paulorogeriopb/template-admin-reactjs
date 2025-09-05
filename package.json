@@ -10,10 +10,10 @@
     "prepare": "husky install",
     "commit": "cz",
     "release": "standard-version",
-    "release:msg": "standard-version --commit-all",
-    "release:push": "standard-version --commit-all && git push --follow-tags origin main",
-    "release:minor:push": "standard-version --release-as minor --commit-all && git push --follow-tags origin main",
-    "release:major:push": "standard-version --release-as major --commit-all && git push --follow-tags origin main"
+    "release:msg": "node release-with-msg.js",
+    "release:push": "npm run release:msg && git push && git push --tags",
+    "release:minor:push": "npm run release:msg minor && git push && git push --tags",
+    "release:major:push": "npm run release:msg major && git push && git push --tags"
   },
   "dependencies": {
     "next": "15.5.0",
