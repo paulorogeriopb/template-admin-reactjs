@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prepare": "husky install",
+    "commit": "cz",
+    "release": "standard-version",
+    "release:push": "standard-version && git push --follow-tags origin main",
+    "release:minor:push": "standard-version --release-as minor && git push --follow-tags origin main",
+    "release:major:push": "standard-version --release-as major && git push --follow-tags origin main"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -28,11 +34,17 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "commitizen": "^4.3.1",
+    "cz-customizable": "^7.5.1",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
     "husky": "^9.1.7",
     "standard-version": "^9.5.0",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    }
   }
 }
