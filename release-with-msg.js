@@ -1,20 +1,23 @@
-const { execSync } = require("child_process");
+import { execSync } from "child_process";
 
 // Pega o argumento da versão (minor, major, patch)
 const releaseArg = process.argv[2] || "";
 
-// Comando base para standard-version
-let cmd = "npx standard-version";
+// Pega a mensagem do último commit
+const lastCommit = execSync("git log -1 --pretty=%B", {
+  encoding: "utf-8",
+}).trim();
 
-// Adiciona --release-as se passado (minor, major, patch)
+// Monta o comando do standard-version
+let cmd = "npx standard-version";
 if (releaseArg) {
   cmd += ` --release-as ${releaseArg}`;
 }
 
-// Define o formato do commit de release para pegar o último commit
-cmd += ` --releaseCommitMessageFormat "chore(release): {{currentTag}} - {{latestCommitMessage}}"`;
+// Usa a mensagem do último commit no commit de release
+cmd += ` --releaseCommitMessageFormat "chore(release): {{currentTag}} - ${lastCommit}"`;
 
-// Executa o standard-version de verdade
+// Executa o comando
 execSync(cmd, { stdio: "inherit" });
 
 console.log("Release criada com sucesso!");
