@@ -8,19 +8,26 @@ let lastCommitMessage = execSync("git log -1 --pretty=%B", {
 // Remove emojis e prefixos como "🔧 chore(teste): "
 lastCommitMessage = lastCommitMessage.replace(/^.*?\(\s*.*?\):\s*/, "").trim();
 
-// Atualiza versão com standard-version, mas sem commit/tag automáticos
+// Se estiver vazia, coloca uma mensagem padrão
+if (!lastCommitMessage) {
+  lastCommitMessage = "Nova versão";
+}
+
+// Atualiza versão com standard-version sem commit/tag automáticos
 execSync("npx standard-version --skip.commit --skip.tag", { stdio: "inherit" });
 
-// Pega a nova versão
+// Pega a nova versão do package.json
 const packageJson = JSON.parse(
   execSync("cat package.json", { encoding: "utf-8" })
 );
 const newVersion = packageJson.version;
 
-// Commit manual da release (opcional, pode usar a própria mensagem do último commit)
+// Adiciona arquivos ao commit
 execSync("git add package.json package-lock.json CHANGELOG.md", {
   stdio: "inherit",
 });
+
+// Cria commit da release usando a mensagem limpa
 execSync(`git commit -m "${lastCommitMessage}"`, { stdio: "inherit" });
 
 // Cria tag usando apenas a mensagem limpa
