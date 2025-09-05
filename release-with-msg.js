@@ -11,14 +11,14 @@ const currentVersion = packageJson.version;
 
 // Função para extrair a mensagem limpa do último commit
 function getLastCommitMessage() {
-  const rawMessage = execSync("git log -1 --pretty=%B", {
+  const rawMessage = execSync("git log -1 --pretty=%s", {
     encoding: "utf-8",
   }).trim();
 
-  // Remove emoji e tipo de commit do Commitizen
-  // Ex.: ✨ feat(teste): adicionar login  =>  adicionar login
+  // Remove emojis e prefixos do commit
+  // Ex.: "✨ feat(teste): adicionar login" => "adicionar login"
   const cleanMessage = rawMessage.replace(
-    /^[^\w]*(feat|fix|chore|docs|style|refactor|test|perf|ci|build)\([^\)]*\):\s*/,
+    /^[^:]*:\s*/, // remove tudo até ": "
     ""
   );
 
@@ -27,12 +27,12 @@ function getLastCommitMessage() {
 
 const lastMessage = getLastCommitMessage();
 
-// Monta a mensagem da release no formato desejado
+// Monta a mensagem da release
 const releaseMsg = `chore(release): ${currentVersion} - ${lastMessage}`;
 
 console.log("Mensagem do release:", releaseMsg);
 
-// Cria a release de verdade com a mensagem customizada
+// Executa standard-version usando a mensagem customizada
 let cmd = `npx standard-version --releaseCommitMessageFormat "${releaseMsg}"`;
 
 if (releaseArg) {
@@ -40,4 +40,3 @@ if (releaseArg) {
 }
 
 execSync(cmd, { stdio: "inherit" });
-console.log("Release criada com sucesso!");
