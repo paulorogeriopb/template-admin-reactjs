@@ -15,7 +15,7 @@ if (releaseArg) {
 }
 
 // Usa a mensagem do último commit no commit de release
-cmd += ` --releaseCommitMessageFormat "chore(release): {{currentTag}} - ${lastCommit}"`;
+cmd += ` --releaseCommitMessageFormat "Release - ${lastCommit}"`;
 
 // Executa o comando
 execSync(cmd, { stdio: "inherit" });
