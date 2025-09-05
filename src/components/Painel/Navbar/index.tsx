@@ -3,8 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-import { useDarkMode } from "@/components/DarkMode";
+import { useTheme } from "next-themes"; // 👈 importar daqui
 
 const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
   const router = useRouter();
@@ -13,8 +12,9 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // tema
-  const { isDark, toggleTheme } = useDarkMode();
+  // tema via next-themes
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -65,7 +65,7 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
             <button
               id="themeToggle"
               className="themeToggle"
-              onClick={toggleTheme}
+              onClick={() => setTheme(isDark ? "light" : "dark")} // 👈 alterna o tema
             >
               <div id="themeToggleThumb" className="themeToggleThumb">
                 {/* Lua */}
@@ -135,8 +135,8 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
                 <Link
                   href="/auth/login"
                   onClick={(e) => {
-                    e.preventDefault(); // impede a navegação automática
-                    handleLogout(); // executa sua função de logout
+                    e.preventDefault();
+                    handleLogout();
                   }}
                   className="sidebar-danger flex items-center gap-2"
                 >

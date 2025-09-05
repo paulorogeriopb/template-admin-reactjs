@@ -1,7 +1,5 @@
-// Layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import DarkModeProvider from "@/components/DarkMode/"; // caminho ajustado
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Projeto React",
-  description: "Descrição do projeto",
+  title: "Site Público",
+  description: "Descrição do site",
 };
 
 export default function RootLayout({
@@ -25,12 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-br">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <DarkModeProvider>{children}</DarkModeProvider>
-      </body>
+    <html lang="pt-BR">
+      <body className="bg-white text-black">{children}</body>
     </html>
   );
 }
