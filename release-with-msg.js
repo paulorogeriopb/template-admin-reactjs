@@ -1,23 +1,43 @@
 import { execSync } from "child_process";
 
-// Pega o argumento da versão (minor, major, patch)
+// Pega argumento de versão (minor, major, patch)
 const releaseArg = process.argv[2] || "";
 
-// Pega a mensagem do último commit
-const lastCommit = execSync("git log -1 --pretty=%B", {
-  encoding: "utf-8",
-}).trim();
+// Pega a última versão do package.json
+const packageJson = JSON.parse(
+  execSync("cat package.json", { encoding: "utf-8" })
+);
+const currentVersion = packageJson.version;
 
-// Monta o comando do standard-version
-let cmd = "npx standard-version";
+// Função para extrair a mensagem limpa do último commit
+function getLastCommitMessage() {
+  const rawMessage = execSync("git log -1 --pretty=%B", {
+    encoding: "utf-8",
+  }).trim();
+
+  // Remove emoji e tipo de commit do Commitizen
+  // Ex.: ✨ feat(teste): adicionar login  =>  adicionar login
+  const cleanMessage = rawMessage.replace(
+    /^[^\w]*(feat|fix|chore|docs|style|refactor|test|perf|ci|build)\([^\)]*\):\s*/,
+    ""
+  );
+
+  return cleanMessage || "Nova versão";
+}
+
+const lastMessage = getLastCommitMessage();
+
+// Monta a mensagem da release no formato desejado
+const releaseMsg = `chore(release): ${currentVersion} - ${lastMessage}`;
+
+console.log("Mensagem do release:", releaseMsg);
+
+// Cria a release de verdade com a mensagem customizada
+let cmd = `npx standard-version --releaseCommitMessageFormat "${releaseMsg}"`;
+
 if (releaseArg) {
   cmd += ` --release-as ${releaseArg}`;
 }
 
-// Usa a mensagem do último commit no commit de release
-cmd += ` --releaseCommitMessageFormat "chore(release): {{currentTag}} - ${lastCommit}"`;
-
-// Executa o comando
 execSync(cmd, { stdio: "inherit" });
-
 console.log("Release criada com sucesso!");
