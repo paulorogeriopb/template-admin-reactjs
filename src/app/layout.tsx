@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Site Público",
+  title: "Nimbus",
   description: "Descrição do site",
 };
 

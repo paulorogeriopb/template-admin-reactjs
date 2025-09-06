@@ -47,7 +47,8 @@
   --alert-dark: #313a46;
   --alert-dark-secondary: #ced4da;
 
-  --sombra: #191e24;
+  --sombra: #1b2026;
+  --borda: #313a46;
 }
 
 @layer components {
@@ -118,20 +119,20 @@
   .form-input-login {
     @apply mt-1 w-full p-3 pr-10 text-gray-600 rounded-xl border 
          border-gray-300 
-         focus:border-gray-300 
-         focus:ring-2 focus:ring-(--default) focus:outline-none 
+         focus:border-(--default) 
+         focus:ring-1 focus:ring-(--default) focus:outline-none 
          px-3 py-3 
          dark:border-gray-600 dark:text-gray-500 dark:placeholder-gray-400;
   }
 
   /* vazio → cinza */
   .form-input-login:placeholder-shown {
-    @apply bg-gray-100;
+    @apply bg-gray-100 dark:bg-(--dark-primary) shadow-lg;
   }
 
   /* preenchido → branco */
   .form-input-login:not(:placeholder-shown) {
-    @apply bg-white;
+    @apply bg-white dark:bg-(--dark-secondary) shadow-lg;
   }
   /* Margem superior para o link e o botão */
   .btn-group-login {
@@ -318,19 +319,19 @@
 
   /****** Inicio Tabela Listar Registros ******/
   .table-container {
-    @apply overflow-hidden bg-white shadow-sm dark:bg-(--dark-secondary);
+    @apply overflow-hidden bg-white shadow-sm dark:bg-(--dark-secondary) sm:rounded-lg;
   }
 
   .table {
-    @apply min-w-full divide-y divide-gray-200 border-separate border-spacing-0 dark:divide-(--dark-primary);
+    @apply min-w-full divide-y divide-gray-200 border-separate border-spacing-0 dark:divide-(--dark-tertiary);
   }
 
   .table-row-header {
-    @apply bg-gray-50 dark:bg-(--table-header);
+    @apply bg-gray-50 dark:bg-(--sombra);
   }
 
   .table-header {
-    @apply px-6 py-3 text-left text-sm font-medium text-gray-500 tracking-wider border-b border-gray-200 dark:border-b-(--dark-primary) dark:text-gray-400;
+    @apply px-6 py-3 text-left text-sm font-medium text-gray-500 tracking-wider border-b border-gray-200 dark:border-b-(--dark-tertiary) dark:text-gray-400;
   }
 
   .table-header.center {
@@ -338,11 +339,11 @@
   }
 
   .table-body {
-    @apply px-6 py-2 text-sm text-gray-950 border-b border-gray-200 dark:text-gray-400 dark:border-b-(--dark-primary);
+    @apply px-6 py-2 text-sm text-gray-950 border-b border-gray-200 dark:text-gray-400 dark:border-b-(--dark-tertiary);
   }
 
   .table-row-body {
-    @apply hover:bg-gray-50 dark:hover:bg-(--table-hover);
+    @apply hover:bg-gray-50 dark:hover:bg-(--sombra);
   }
 
   .table-actions {
@@ -362,10 +363,10 @@
     @apply text-gray-600 block text-sm font-semibold dark:text-gray-400;
   }
 
-  /* Input padrão */
+  /* Input padrão
   .form-input {
-    @apply border p-2 h-14 text-base w-full mt-1 rounded-xl border-gray-200 shadow-sm focus:border-gray-300 focus:ring focus:ring-gray-200 focus:outline-none dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400;
-  }
+    @apply border p-2 h-14 text-base w-full mt-1 rounded-xl border-gray-200 shadow-sm focus:border-gray-300 focus:ring focus:ring-gray-200 focus:outline-none dark:bg-(--dark-secondary) dark:border-(--sombra) dark:text-gray-200 dark:placeholder-gray-400;
+  } */
 
   /* Estilização do label 
   .form-label {
@@ -373,26 +374,26 @@
   }*/
 
   /* Estilização do input */
-  /*
+
   .form-input {
     @apply mt-1 w-full p-3 pr-10 text-gray-600 rounded-xl border 
          border-gray-300 
-         focus:border-gray-300 
-         focus:ring-2 focus:ring-(--default) focus:outline-none 
-         px-3 py-5 
-         dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400;
-  }*/
+         focus:border-gray-400 dark:focus:border-gray-600
+    focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600
+    focus:outline-none
+         px-3 py-3  
+         bg-gray-100
+         dark:border-(--borda) dark:text-gray-400 dark:bg-(--dark-secondary)  dark:placeholder-gray-400;
+  }
 
   /* vazio → cinza 
   .form-input:placeholder-shown {
-    @apply bg-gray-100 ;
-       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    @apply bg-gray-100 dark:bg-(--dark-primary) shadow-lg;
   }*/
 
   /* preenchido → branco 
   .form-input:not(:placeholder-shown) {
-    @apply bg-white;
-       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    @apply bg-white dark:bg-(--dark-secondary) shadow-lg;
   }*/
 
   /****** Fim Formulário ******/

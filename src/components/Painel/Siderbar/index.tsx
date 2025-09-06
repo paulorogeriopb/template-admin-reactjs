@@ -96,7 +96,7 @@ const Sidebar = ({
             <span>Cursos</span>
           </Link>
 
-          <Link href="painel/users/list.html" className="sidebar-link">
+          <Link href="/painel/users/list" className="sidebar-link">
             {/* Ícone user-group (Heroicons) */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
