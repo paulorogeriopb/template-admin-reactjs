@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.27](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.1...v0.1.27) (2025-09-06)
+
+
+### Features
+
+* criação da pagina de users ([668fc27](https://github.com/paulorogeriopb/template-admin-reactjs/commit/668fc270d035c73c4888d90952d1bba373cc4842))
+* teste teste ([cb21121](https://github.com/paulorogeriopb/template-admin-reactjs/commit/cb211215a2494693adc6ef568a0ec082e262b086))
+
 ### [0.1.26](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.25...v0.1.26) (2025-09-05)
 
 
