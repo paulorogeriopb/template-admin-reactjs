@@ -1,6 +1,8 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import DarkModeProvider from "@/components/DarkMode"; // ajuste o caminho se necessário
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,7 +26,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className="bg-white text-black">{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        {/* Provider deve estar dentro do body */}
+        <DarkModeProvider>{children}</DarkModeProvider>
+      </body>
     </html>
   );
 }

@@ -3,7 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import { useTheme } from "next-themes";
 import {
   LuLogOut,
   LuChevronDown,
@@ -12,14 +12,17 @@ import {
   LuSun,
   LuAlignJustify,
 } from "react-icons/lu";
-import { useDarkMode } from "@/components/DarkMode";
 
 const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
   const router = useRouter();
-  const { isDark, toggleTheme } = useDarkMode();
 
+  // dropdown
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // tema via next-themes
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -42,16 +45,7 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Image
-          key={isDark ? "dark" : "light"} // força re-render
-          src={isDark ? "/images/logo-v.png" : "/images/logo-v.png"}
-          alt="Logo Nimbus"
-          width={160}
-          height={80}
-          className="mr-8"
-          style={{ width: "160px", height: "auto", objectFit: "contain" }}
-          priority
-        />
+        {/* Botão sidebar */}
         <button
           id="toggleSidebar"
           className="menu-button"
@@ -60,30 +54,47 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
           <LuAlignJustify size={28} />
         </button>
 
+        {/* User / Theme */}
         <div className="user-container">
+          {/* Toggle theme */}
           <div className="relative dropdown-button-border">
             <button
               id="themeToggle"
               className="themeToggle"
-              onClick={toggleTheme} // usa provider
+              onClick={() => setTheme(isDark ? "light" : "dark")} // alterna o tema
             >
               <div id="themeToggleThumb" className="themeToggleThumb">
-                <LuMoon
-                  size={24}
-                  className={`${
+                {/* Lua */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className={`w-4 h-4 text-yellow-400 ${
                     isDark ? "hidden" : "block"
-                  } w-4 h-4 text-yellow-400 `}
-                />
-                <LuSun
-                  size={24}
-                  className={`${
+                  }`}
+                >
+                  <LuMoon size={24} />
+                </svg>
+                {/* Sol */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className={`w-4 h-4 text-yellow-300 ${
                     isDark ? "block" : "hidden"
-                  } w-4 h-4 text-yellow-400 `}
-                />
+                  }`}
+                >
+                  <LuSun size={24} />
+                </svg>
               </div>
             </button>
           </div>
 
+          {/* Dropdown usuário */}
           <div ref={dropdownRef}>
             <button
               id="userDropdownButton"
@@ -97,7 +108,7 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
               <div id="dropdownContent" className="dropdown-content">
                 <Link
                   href="#"
-                  className="dropdown-item flex items-center gap-2"
+                  className="dropdown-item  flex items-center gap-2"
                 >
                   <LuCircleUserRound size={20} />
                   Perfil
