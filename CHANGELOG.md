@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.30](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.29...v0.1.30) (2025-09-07)
+
+
+### Features
+
+* criação das roles ([e1e9f0a](https://github.com/paulorogeriopb/template-admin-reactjs/commit/e1e9f0a50400dbca68c4ea865c9e833be59db0f8))
+
 ### [0.1.29](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.28...v0.1.29) (2025-09-06)
 
 ### [0.1.28](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.27...v0.1.28) (2025-09-06)
