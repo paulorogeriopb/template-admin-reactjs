@@ -6,11 +6,11 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { AxiosError } from "axios";
 import Pagination from "@/components/Pagination";
-import DeleteButton from "@/components/DeleteButton";
 import Layout from "@/components/Painel/Layout";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { LuCirclePlus, LuEye, LuSquarePen, LuSearch } from "react-icons/lu";
+import { LuCirclePlus, LuSearch } from "react-icons/lu";
 import AlertMessageDismissible from "@/components/AlertMessageDismissible";
+import ActionButtons from "@/components/ActionButtonsBasic";
 
 type Curso = {
   id: number;
@@ -24,7 +24,6 @@ export default function CursosList() {
   const router = useRouter();
 
   const [search, setSearch] = useState<string>("");
-
   const pageFromUrl = Number(searchParams.get("page")) || 1;
 
   const [cursos, setCursos] = useState<Curso[]>([]);
@@ -32,6 +31,8 @@ export default function CursosList() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(pageFromUrl);
   const [lastPage, setLastPage] = useState<number>(1);
+
+  const [openId, setOpenId] = useState<number | null>(null); // para controlar dropdown mobile
 
   // Buscar cursos da API
   const fetchCursos = async (page: number) => {
@@ -83,7 +84,6 @@ export default function CursosList() {
   return (
     <Layout>
       <main className="main-content">
-        {/* Header */}
         <div className="content-wrapper">
           <div className="content-header">
             <h2 className="content-title">Cursos</h2>
@@ -125,7 +125,7 @@ export default function CursosList() {
               />
               <button
                 onClick={handleSearch}
-                className="btn-default flex items-center gap-2 py-3"
+                className="btn-default flex items-center gap-2 py-2 px-4"
               >
                 <LuSearch size={20} />
                 Buscar
@@ -152,28 +152,15 @@ export default function CursosList() {
                         <tr className="table-row-body" key={curso.id}>
                           <td className="table-body">{curso.id}</td>
                           <td className="table-body">{curso.name}</td>
-                          <td className="table-body table-actions flex gap-2">
-                            <Link
-                              href={`/painel/cursos/${curso.id}`}
-                              className="btn-primary flex items-center gap-2"
-                              aria-label={`Visualizar curso ${curso.name}`}
-                            >
-                              <LuEye /> Visualizar
-                            </Link>
-
-                            <Link
-                              href={`/painel/cursos/${curso.id}/edit`}
-                              className="btn-warning flex items-center gap-2"
-                              aria-label={`Editar curso ${curso.name}`}
-                            >
-                              <LuSquarePen /> Editar
-                            </Link>
-
-                            <DeleteButton
-                              id={String(curso.id)}
-                              route={`/cursos`}
+                          <td className="table-body table-actions">
+                            <ActionButtons
+                              id={curso.id}
+                              basePath="/painel/cursos"
+                              entityName="curso"
                               onSuccess={handleSuccess}
                               setError={setError}
+                              openId={openId}
+                              setOpenId={setOpenId}
                             />
                           </td>
                         </tr>
@@ -190,7 +177,6 @@ export default function CursosList() {
               )}
             </div>
 
-            {/* Paginação */}
             {!loading && !error && cursos.length > 0 && (
               <Pagination
                 currentPage={currentPage}

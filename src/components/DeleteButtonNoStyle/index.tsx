@@ -1,23 +1,23 @@
-// DeleteButton.tsx
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { AxiosError } from "axios";
 import instance from "@/services/api";
-import { LuTrash2 } from "react-icons/lu";
 import Swal from "sweetalert2";
+import { LuTrash2 } from "react-icons/lu";
 
-// Interface atualizada
 interface DeleteButtonProps {
   id: string;
   route: string;
   onSuccess: () => void;
   setError: (message: string | null) => void;
+  children?: ReactNode; // ✅ Adicionado
 }
 
-const DeleteButton = ({
+const DeleteButtonNoStyle = ({
   id,
   route,
   onSuccess,
   setError,
+  children,
 }: DeleteButtonProps) => {
   const [loading, setLoading] = useState(false);
 
@@ -41,7 +41,7 @@ const DeleteButton = ({
 
     try {
       await instance.delete(`${route}/${id}`);
-      onSuccess(); // atualiza a lista
+      onSuccess();
       Swal.fire({
         title: "Sucesso!",
         text: "O item foi removido com sucesso.",
@@ -56,25 +56,13 @@ const DeleteButton = ({
           error.response?.data?.error ||
           "Erro inesperado ao deletar.";
         setError(msg);
-        Swal.fire({
-          title: "Erro",
-          text: msg,
-          icon: "error",
-        });
+        Swal.fire({ title: "Erro", text: msg, icon: "error" });
       } else if (error instanceof Error) {
         setError(error.message);
-        Swal.fire({
-          title: "Erro",
-          text: error.message,
-          icon: "error",
-        });
+        Swal.fire({ title: "Erro", text: error.message, icon: "error" });
       } else {
         setError("Erro desconhecido");
-        Swal.fire({
-          title: "Erro",
-          text: "Erro desconhecido",
-          icon: "error",
-        });
+        Swal.fire({ title: "Erro", text: "Erro desconhecido", icon: "error" });
       }
     } finally {
       setLoading(false);
@@ -85,18 +73,17 @@ const DeleteButton = ({
     <button
       onClick={handleDelete}
       disabled={loading}
-      className="btn-danger inline-flex items-center gap-2"
+      className="block w-full text-left px-4 py-2  items-center gap-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) hover:text-(--default)  cursor-pointer"
     >
-      {loading ? (
-        "Excluindo..."
-      ) : (
-        <>
-          <LuTrash2 className="text-white" />
-          Excluir
-        </>
-      )}
+      {loading
+        ? "Excluindo..."
+        : children || (
+            <>
+              <LuTrash2 /> Excluir
+            </>
+          )}
     </button>
   );
 };
 
-export default DeleteButton;
+export default DeleteButtonNoStyle;

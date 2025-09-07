@@ -149,7 +149,7 @@
   }
 
   .btn-login {
-    @apply bg-(--default) w-full text-shadow-md shadow-xl  text-white text-xl px-2 py-2 rounded-xl hover:bg-(--default-secondary) transition-colors cursor-pointer;
+    @apply bg-(--default) w-full text-shadow-md shadow-xl  text-white text-xl px-2 py-2 rounded-xl hover:bg-(--default-secondary)  cursor-pointer;
   }
 
   /****** Fim Login ******/
@@ -208,7 +208,7 @@
   /***** Início do Toggle Theme ****/
 
   .themeToggle {
-    @apply w-8 h-8 flex items-center bg-gray-300 dark:bg-gray-700 rounded-full p-1 transition-colors duration-300 focus:outline-none;
+    @apply w-8 h-8 flex items-center bg-gray-300 dark:bg-gray-700 rounded-full p-1  duration-300 focus:outline-none;
   }
 
   .themeToggleThumb {
@@ -420,41 +420,47 @@
   /****** Início Botões ******/
 
   .btn-default {
-    @apply bg-(--default) text-white text-sm px-2 py-1 rounded hover:bg-(--default-secondary) transition-colors cursor-pointer shadow-md;
+    @apply bg-(--default) text-white text-sm px-2 py-1 rounded hover:bg-(--default-secondary)  cursor-pointer shadow-md;
   }
 
   .btn-default-md {
-    @apply bg-(--default) text-white text-sm px-2 py-2 rounded hover:bg-(--default-secondary) transition-colors cursor-pointer shadow-md;
+    @apply bg-(--default) text-white text-sm px-2 py-2 rounded hover:bg-(--default-secondary)  cursor-pointer shadow-md;
+  }
+
+  .btn-light {
+    @apply bg-(--light-primary) dark:bg-(--dark-primary) text-gray-400  hover:text-(--default) text-sm px-2 py-2 rounded hover:bg-(--light-tertiary) dark:hover:bg-(--dark-tertiary)  cursor-pointer shadow-lg;
+
+    /*  @apply px-4 py-3 text-sm text-gray-500  hover:bg-gray-200 hover:text-(--default)  dark:text-gray-400 dark:hover:bg-(--dark-secondary) dark:hover:text-(--default)  cursor-pointer shadow-lg;*/
   }
 
   /* Botão azul */
   .btn-primary {
-    @apply bg-(--primary) text-white text-sm px-2 py-1 rounded hover:bg-(--text-primary) transition-colors cursor-pointer shadow-md;
+    @apply bg-(--primary)  text-white text-sm px-2 py-1 rounded hover:bg-(--text-primary)  cursor-pointer shadow-md;
   }
 
   /* Botão azul médio */
   .btn-primary-md {
-    @apply bg-(--primary) text-white text-base px-2 py-2 rounded hover:bg-(--text-primary) transition-colors cursor-pointer shadow-md;
+    @apply bg-(--primary) text-white text-base px-2 py-2 rounded hover:bg-(--text-primary)  cursor-pointer shadow-md;
   }
 
   /* Botão azul claro */
   .btn-info {
-    @apply bg-(--info) text-white text-sm px-2 py-1 rounded hover:bg-(--text-info) transition-colors cursor-pointer shadow-md;
+    @apply bg-(--info) text-white text-sm px-2 py-1 rounded hover:bg-(--text-info)  cursor-pointer shadow-md;
   }
 
   /* Botão verde */
   .btn-success {
-    @apply bg-(--success) text-white text-sm px-2 py-1 rounded hover:bg-(--text-success) transition-colors cursor-pointer shadow-md;
+    @apply bg-(--success) text-white text-sm px-2 py-1 rounded hover:bg-(--text-success)  cursor-pointer shadow-md;
   }
 
   /* Botão amarelo */
   .btn-warning {
-    @apply bg-(--warning) text-white text-sm px-2 py-1 rounded hover:bg-(--text-warning) transition-colors cursor-pointer shadow-md;
+    @apply bg-(--warning) text-white text-sm px-2 py-1 rounded hover:bg-(--text-warning)  cursor-pointer shadow-md;
   }
 
   /* Botão vermelho */
   .btn-danger {
-    @apply bg-(--danger) text-white text-sm px-2 py-1 rounded hover:bg-(--text-danger) transition-colors cursor-pointer shadow-md;
+    @apply bg-(--danger) text-white text-sm px-2 py-1 rounded hover:bg-(--text-danger)  cursor-pointer shadow-md;
   }
 
   /* Alinha os botões em linha */
