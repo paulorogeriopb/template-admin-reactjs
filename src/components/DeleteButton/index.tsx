@@ -22,7 +22,7 @@ const DeleteButton = ({
 
   const handleDelete = async () => {
     // Pergunta ao usuário se deseja realmente excluir
-    const confirmed = window.confirm("Deseja realmente excluir este curso?");
+    const confirmed = window.confirm("Deseja realmente excluir?");
     if (!confirmed) return; // se cancelar, não faz nada
 
     if (loading) return; // evita múltiplos cliques
@@ -37,7 +37,7 @@ const DeleteButton = ({
       onSuccess();
 
       // Exibe mensagem de sucesso
-      setSuccess("Curso deletado com sucesso!");
+      setSuccess("Deletado com sucesso!");
 
       // Opcional: sumir com a mensagem após 3 segundos
       setTimeout(() => setSuccess(null), 3000);

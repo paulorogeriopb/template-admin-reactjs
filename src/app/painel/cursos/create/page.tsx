@@ -51,7 +51,7 @@ export default function CreateCurso() {
     register, // registra os campos
     handleSubmit, // envia os dados do formulário
     formState: { errors }, // captura erros de validação
-    reset, // reseta o formulário após sucesso
+    reset, // limpa o formulário após sucesso
   } = useForm({
     resolver: yupResolver(schema), // usa o schema do Yup como validador
   });

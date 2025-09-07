@@ -1,72 +1,81 @@
 "use client";
 
+// Hooks do React
 import { useState } from "react";
+
+// Hook principal para formulários
 import { useForm } from "react-hook-form";
+
+// Validador do react-hook-form com Yup
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+
+// Axios para tratar erros de requisição
 import { AxiosError } from "axios";
+
+// Router do Next para navegação programática
 import { useRouter } from "next/navigation";
+
+// Componentes auxiliares
 import Link from "next/link";
-import instance from "@/services/api";
+import instance from "@/services/api"; // sua instância axios configurada
 
 import Layout from "@/components/Painel/Layout";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import AlertMessageDismissible from "@/components/AlertMessageDismissible";
 import { LuPlus, LuSave, LuList } from "react-icons/lu";
+import AlertMessageDismissible from "@/components/AlertMessageDismissible";
 
-// Validação com Yup
+// Schema de validação com Yup
 const schema = yup.object().shape({
   name: yup
     .string()
-    .required("O nome do Perfil é obrigatório.")
-    .min(3, "O nome do perfil deve conter pelo menos 3 letras."),
+    .required("O nome do curso é obrigatório.")
+    .min(3, "O nome do curso deve conter pelo menos 3 letras."),
 });
 
 export default function CreateCurso() {
+  // Controle de carregamento
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Controle de erro
   const [error, setError] = useState<string | null>(null);
+
+  // Controle de sucesso
   const [success, setSuccess] = useState<string | null>(null);
 
+  // Hook do Next.js para navegação
   const router = useRouter();
 
+  // Configuração do formulário com as validações
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
+    register, // registra os campos
+    handleSubmit, // envia os dados do formulário
+    formState: { errors }, // captura erros de validação
+    reset, // limpa o formulário após sucesso
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema), // usa o schema do Yup como validador
   });
 
+  // Função padrão de cadastro (Continuar cadastrando)
   const onsubmit = async (data: { name: string }) => {
+    // Controle de carregamento
     setLoading(true);
+    // Controle de erro
     setError(null);
+    // Controle de sucesso
     setSuccess(null);
 
-    const payload = { ...data, guard_name: "sanctum" };
-    console.log("Payload enviado:", payload);
-
     try {
-      const response = await instance.post("/roles", payload);
-      console.log("Resposta da API:", response.data);
+      const response = await instance.post("/cursos", data);
 
-      const successMsg =
-        response.data.message ||
-        response.data.msg ||
-        "Perfil cadastrado com sucesso!";
-      setSuccess(successMsg);
-
-      reset();
+      // Mensagem de sucesso
+      setSuccess(response.data.message || "Curso cadastrado com sucesso!");
+      reset(); // limpa formulário
     } catch (err: unknown) {
-      console.error("Erro completo:", err); // <-- log completo do erro
       if (err instanceof AxiosError && err.response) {
-        console.log("Status:", err.response.status);
-        console.log("Headers:", err.response.headers);
-        console.log("Data da resposta:", err.response.data);
+        const data = err.response.data;
         setError(
-          err.response.data.message ||
-            err.response.data.error ||
-            "Erro inesperado"
+          data.message || data.error || "Erro inesperado ao cadastrar curso."
         );
       } else {
         setError("Erro de conexão com o servidor.");
@@ -76,34 +85,26 @@ export default function CreateCurso() {
     }
   };
 
+  // Função de cadastro e redirecionamento (Cadastrar e voltar)
   const handleSubmitAndRedirect = handleSubmit(async (data) => {
     setLoading(true);
     setError(null);
     setSuccess(null);
 
-    const payload = { ...data, guard_name: "sanctum" };
-    console.log("Payload enviado (redirect):", payload);
-
     try {
-      const response = await instance.post("/roles", payload);
-      console.log("Resposta da API (redirect):", response.data);
+      // Envia os dados para API
+      const response = await instance.post("/cursos", data);
 
-      const successMsg =
-        response.data.message ||
-        response.data.msg ||
-        "Perfil cadastrado com sucesso!";
-      setSuccess(successMsg);
+      setSuccess(response.data.message || "Curso cadastrado com sucesso!");
+      reset(); // limpa formulário
 
-      reset();
-
-      router.push("/painel/roles/list");
+      // Redireciona para lista de cursos
+      router.push("/painel/cursos/list");
     } catch (err: unknown) {
-      console.error("Erro completo (redirect):", err); // <-- log completo do erro
       if (err instanceof AxiosError && err.response) {
-        console.log("Erro Axios response (redirect):", err.response.data); // <-- log da resposta da API
         const data = err.response.data;
         setError(
-          data.message || data.error || "Erro inesperado ao cadastrar perfil."
+          data.message || data.error || "Erro inesperado ao cadastrar curso."
         );
       } else {
         setError("Erro de conexão com o servidor, tente novamente mais tarde.");
@@ -116,17 +117,17 @@ export default function CreateCurso() {
   return (
     <Layout>
       <main className="main-content">
-        {/* Cabeçalho e breadcrumb */}
+        {/* Título e Trilha de Navegação */}
         <div className="content-wrapper">
           <div className="content-header">
-            <h2 className="content-title">Perfil</h2>
+            <h2 className="content-title">Curso</h2>
             <nav className="breadcrumb">
               <Link href="/painel/dashboard" className="breadcrumb-link">
                 Dashboard
               </Link>
               <span> / </span>
-              <Link href="/painel/roles/list" className="breadcrumb-link">
-                Perfil
+              <Link href="/painel/cursos/list" className="breadcrumb-link">
+                Curso
               </Link>
               <span> / </span>
               <span>Novo</span>
@@ -139,8 +140,8 @@ export default function CreateCurso() {
             <h3 className="content-box-title">Novo</h3>
             <div className="content-box-btn">
               <Link
-                href={`/painel/roles/list`}
-                className="btn-info flex items-center gap-2"
+                href={`/painel/cursos/list`}
+                className="btn-info  flex items-center gap-2"
               >
                 <LuList /> Visualizar
               </Link>
@@ -148,8 +149,9 @@ export default function CreateCurso() {
           </div>
 
           <div className="content-box-body">
-            {loading && <LoadingSpinner />}
+            {loading && LoadingSpinner()}
             <AlertMessageDismissible type="error" message={error} />
+
             {success && (
               <AlertMessageDismissible type="success" message={success} />
             )}
@@ -158,25 +160,27 @@ export default function CreateCurso() {
             <form onSubmit={handleSubmit(onsubmit)}>
               <div className="mb-4">
                 <label htmlFor="name" className="form-label">
-                  Perfil
+                  Curso
                 </label>
                 <input
                   type="text"
-                  placeholder="Nome do Perfil"
-                  {...register("name")}
+                  placeholder="Nome do Curso"
+                  {...register("name")} // integração com react-hook-form
                   className="form-input"
                 />
+                {/* Mensagem de erro do Yup */}
                 {errors.name && (
                   <p style={{ color: "red" }}>{errors.name.message}</p>
                 )}
               </div>
 
               <div className="content-box-footer-btn">
+                {/* Botão 1: Cadastrar e voltar */}
                 <button
                   type="button"
                   onClick={handleSubmitAndRedirect}
                   disabled={loading}
-                  className="btn-success flex items-center space-x-1"
+                  className="btn-success flex items-center space-x-1 "
                   style={{ marginLeft: "10px" }}
                 >
                   {loading ? (
@@ -188,6 +192,7 @@ export default function CreateCurso() {
                     </>
                   )}
                 </button>
+                {/* Botão 2: Cadastrar e continuar */}
 
                 <button
                   type="submit"

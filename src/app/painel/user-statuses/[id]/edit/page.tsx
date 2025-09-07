@@ -17,11 +17,11 @@ import AlertMessageDismissible from "@/components/AlertMessageDismissible";
 const schema = yup.object().shape({
   name: yup
     .string()
-    .required("O nome do perfil é obrigatório.")
-    .min(3, "O nome do perfil deve conter pelo menos 3 letras."),
+    .required("O nome do curso é obrigatório.")
+    .min(3, "O nome do curso deve conter pelo menos 3 letras."),
 });
 
-export default function EditRole() {
+export default function EditCurso() {
   const { id } = useParams();
   const router = useRouter();
 
@@ -39,19 +39,19 @@ export default function EditRole() {
     resolver: yupResolver(schema),
   });
 
-  // Buscar detalhes do perfil ao carregar
+  // Buscar detalhes do curso ao carregar
   useEffect(() => {
-    const fetchRoleDetails = async () => {
+    const fetchCursoDetails = async () => {
       try {
         setLoading(true);
-        const response = await instance.get(`/roles/${id}`);
-        setValue("name", response.data.data.name); // preenche o formulário
+        const response = await instance.get(`/cursos/${id}`);
+        setValue("name", response.data.name); // preenche o formulário
       } catch (err: unknown) {
         if (err instanceof AxiosError) {
           setError(
             err.response?.data?.message ||
               err.response?.data?.error ||
-              "Erro ao carregar o perfil."
+              "Erro ao carregar o curso."
           );
         } else if (err instanceof Error) {
           setError(err.message);
@@ -63,7 +63,7 @@ export default function EditRole() {
       }
     };
 
-    if (id) fetchRoleDetails();
+    if (id) fetchCursoDetails();
   }, [id, setValue]);
 
   // Função genérica para salvar
@@ -76,15 +76,15 @@ export default function EditRole() {
     setSuccess(null);
 
     try {
-      const response = await instance.put(`/roles/${id}`, data);
-      setSuccess(response.data.message || "Perfil atualizado com sucesso!");
-      if (redirectAfterSave) router.push("/painel/roles/list");
+      const response = await instance.put(`/cursos/${id}`, data);
+      setSuccess(response.data.message || "Curso atualizado com sucesso!");
+      if (redirectAfterSave) router.push("/painel/cursos/list");
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         setError(
           err.response?.data?.message ||
             err.response?.data?.error ||
-            "Erro inesperado ao atualizar perfil."
+            "Erro inesperado ao atualizar curso."
         );
       } else if (err instanceof Error) {
         setError(err.message);
@@ -102,14 +102,14 @@ export default function EditRole() {
         {/* Título e Trilha de Navegação */}
         <div className="content-wrapper">
           <div className="content-header">
-            <h2 className="content-title">Perfil</h2>
+            <h2 className="content-title">Curso</h2>
             <nav className="breadcrumb">
               <Link href="/painel/dashboard" className="breadcrumb-link">
                 Dashboard
               </Link>
               <span> / </span>
-              <Link href="/painel/roles/list" className="breadcrumb-link">
-                Perfil
+              <Link href="/painel/cursos/list" className="breadcrumb-link">
+                Curso
               </Link>
               <span> / </span>
               <span>Editar</span>
@@ -122,7 +122,7 @@ export default function EditRole() {
             <h3 className="content-box-title">Editar</h3>
             <div className="content-box-btn">
               <Link
-                href={`/painel/roles/list`}
+                href={`/painel/cursos/list`}
                 className="btn-info  flex items-center gap-2"
               >
                 <LuList /> Visualizar
@@ -142,11 +142,11 @@ export default function EditRole() {
             <form onSubmit={handleSubmit((data) => onSubmit(data, false))}>
               <div className="mb-4">
                 <label htmlFor="name" className="form-label">
-                  Perfil
+                  Curso
                 </label>
                 <input
                   type="text"
-                  placeholder="Nome do Perfil"
+                  placeholder="Nome do Curso"
                   {...register("name")} // integração com react-hook-form
                   className="form-input"
                 />

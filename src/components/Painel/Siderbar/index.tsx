@@ -56,6 +56,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
       label: "Perfis",
     },
     {
+      href: "/painel/user-statuses/list",
+      icon: <LuUserCog size={18} />,
+      label: "Status Usuários",
+    },
+    {
       href: "/painel/alert/alert.html",
       icon: <LuTriangleAlert size={18} />,
       label: "Alertas",
@@ -85,7 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
         <div className="sidebar-header">
           <Image
             key={isDark ? "dark" : "light"} // força re-render
-            src={isDark ? "/images/logo-v.png" : "/images/logo-v.png"}
+            src={isDark ? "/images/logo-dark.png" : "/images/logo-v.png"}
             alt="Logo Nimbus"
             width={160}
             height={80}

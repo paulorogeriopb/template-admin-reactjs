@@ -19,10 +19,10 @@ type Curso = {
 };
 
 export default function CursoDetails() {
-  //Usado useParams para acessar o parametro 'id' da URL
+  //Usado useParams para acessar o parâmetro 'id' da URL
   const { id } = useParams();
 
-  // Estado para amazenar o curso
+  // Estado para armazenar o curso
   const [curso, setCurso] = useState<Curso | null>(null);
 
   // Controle de carregamento
@@ -31,7 +31,7 @@ export default function CursoDetails() {
   // Controle de erro
   const [error, setError] = useState<string | null>(null);
 
-  // busar o registro pelo id na API
+  // buscar o registro pelo id na API
   const fetchCursoDetails = async (id: string) => {
     try {
       setLoading(true);

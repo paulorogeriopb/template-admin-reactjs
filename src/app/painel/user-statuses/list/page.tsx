@@ -12,42 +12,42 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { LuCirclePlus, LuEye, LuSquarePen } from "react-icons/lu";
 import AlertMessageDismissible from "@/components/AlertMessageDismissible";
 
-type Role = {
+type Curso = {
   id: number;
   name: string;
   created_at: string;
   updated_at: string;
 };
 
-export default function RolesList() {
+export default function CursosList() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const pageFromUrl = Number(searchParams.get("page")) || 1;
 
-  const [roles, setRoles] = useState<Role[]>([]);
+  const [cursos, setCursos] = useState<Curso[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(pageFromUrl);
   const [lastPage, setLastPage] = useState<number>(1);
 
-  // Buscar Roles da API
-  const fetchRoles = async (page: number) => {
+  // Buscar cursos da API
+  const fetchCursos = async (page: number) => {
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      const response = await instance.get(`/roles?page=${page}`);
-      setRoles(response.data.data.data || []);
+      const response = await instance.get(`/user-statuses?page=${page}`);
+      setCursos(response.data.data || []);
       setCurrentPage(response.data.current_page || page);
       setLastPage(response.data.last_page || 1);
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         const data = err.response?.data;
         setError(
-          data?.message || data?.error || "Erro inesperado ao carregar Perfis."
+          data?.message || data?.error || "Erro inesperado ao carregar cursos."
         );
       } else if (err instanceof Error) {
         setError(err.message);
@@ -61,12 +61,12 @@ export default function RolesList() {
 
   // Callback após sucesso na exclusão
   const handleSuccess = () => {
-    setSuccess("Role deletado com sucesso!");
-    fetchRoles(currentPage);
+    setSuccess("Curso deletado com sucesso!");
+    fetchCursos(currentPage);
   };
 
   useEffect(() => {
-    fetchRoles(pageFromUrl);
+    fetchCursos(pageFromUrl);
   }, [pageFromUrl]);
 
   const handlePageChange = (page: number) => {
@@ -81,23 +81,23 @@ export default function RolesList() {
         {/* Header */}
         <div className="content-wrapper">
           <div className="content-header">
-            <h2 className="content-title">Perfis</h2>
+            <h2 className="content-title">Cursos</h2>
             <nav className="breadcrumb">
               <Link href="/painel/dashboard" className="breadcrumb-link">
                 Dashboard
               </Link>
               <span> / </span>
-              <span>Perfis</span>
+              <span>Cursos</span>
             </nav>
           </div>
         </div>
 
         <div className="content-box">
           <div className="content-box-header flex justify-between items-center">
-            <h3 className="content-box-title">Perfis</h3>
+            <h3 className="content-box-title">Cursos</h3>
             <div className="content-box-btn">
               <Link
-                href="/painel/roles/create"
+                href="/painel/cursos/create"
                 className="btn-success flex items-center gap-1"
               >
                 <LuCirclePlus />
@@ -116,7 +116,7 @@ export default function RolesList() {
             <div className="table-container mt-6">
               {!loading && !error && (
                 <table className="table">
-                  <caption className="sr-only">Lista de Roles</caption>
+                  <caption className="sr-only">Lista de Cursos</caption>
                   <thead>
                     <tr className="table-row-header">
                       <th className="table-header">ID</th>
@@ -125,31 +125,31 @@ export default function RolesList() {
                     </tr>
                   </thead>
                   <tbody>
-                    {roles.length > 0 ? (
-                      roles.map((role) => (
-                        <tr className="table-row-body" key={role.id}>
-                          <td className="table-body">{role.id}</td>
-                          <td className="table-body">{role.name}</td>
+                    {cursos.length > 0 ? (
+                      cursos.map((curso) => (
+                        <tr className="table-row-body" key={curso.id}>
+                          <td className="table-body">{curso.id}</td>
+                          <td className="table-body">{curso.name}</td>
                           <td className="table-body table-actions flex gap-2">
                             <Link
-                              href={`/painel/roles/${role.id}`}
+                              href={`/painel/cursos/${curso.id}`}
                               className="btn-primary flex items-center gap-2"
-                              aria-label={`Visualizar role ${role.name}`}
+                              aria-label={`Visualizar curso ${curso.name}`}
                             >
                               <LuEye /> Visualizar
                             </Link>
 
                             <Link
-                              href={`/painel/roles/${role.id}/edit`}
+                              href={`/painel/cursos/${curso.id}/edit`}
                               className="btn-warning flex items-center gap-2"
-                              aria-label={`Editar role ${role.name}`}
+                              aria-label={`Editar curso ${curso.name}`}
                             >
                               <LuSquarePen /> Editar
                             </Link>
 
                             <DeleteButton
-                              id={String(role.id)}
-                              route={`/roles`}
+                              id={String(curso.id)}
+                              route={`/cursos`}
                               onSuccess={handleSuccess}
                               setError={setError}
                               setSuccess={setSuccess}
@@ -160,7 +160,7 @@ export default function RolesList() {
                     ) : (
                       <tr>
                         <td colSpan={3} className="text-center py-4">
-                          Nenhum Perfil encontrado
+                          Nenhum curso encontrado
                         </td>
                       </tr>
                     )}
@@ -170,7 +170,7 @@ export default function RolesList() {
             </div>
 
             {/* Paginação */}
-            {!loading && !error && roles.length > 0 && (
+            {!loading && !error && cursos.length > 0 && (
               <Pagination
                 currentPage={currentPage}
                 lastPage={lastPage}
