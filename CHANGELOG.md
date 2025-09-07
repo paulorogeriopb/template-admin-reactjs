@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.33](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.32...v0.1.33) (2025-09-07)
+
+
+### Bug Fixes
+
+* criação do search nas paginas e botão de excluir ([3e58436](https://github.com/paulorogeriopb/template-admin-reactjs/commit/3e584367fd6ae306c15f179ac9d3731426927a37))
+
 ### [0.1.32](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.31...v0.1.32) (2025-09-07)
 
 ### [0.1.31](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.30...v0.1.31) (2025-09-07)
