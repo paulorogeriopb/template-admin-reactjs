@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.31](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.30...v0.1.31) (2025-09-07)
+
+
+### Features
+
+* configuração do  - a beautiful, responsive, customizable and accessible ... ([05b047f](https://github.com/paulorogeriopb/template-admin-reactjs/commit/05b047fb0b4c2d630448f9812780f189f202be24))
+
 ### [0.1.30](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.29...v0.1.30) (2025-09-07)
 
 
