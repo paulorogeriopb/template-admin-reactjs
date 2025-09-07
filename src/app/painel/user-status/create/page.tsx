@@ -19,13 +19,13 @@ import { SwalAlert } from "@/components/SwalAlert";
 const schema = yup.object().shape({
   name: yup
     .string()
-    .required("O nome do Perfil é obrigatório.")
-    .min(3, "O nome do perfil deve conter pelo menos 3 letras."),
+    .required("O nome do status é obrigatório.")
+    .min(3, "O nome do status deve conter pelo menos 3 letras."),
 });
 
 type FormData = { name: string };
 
-export default function CreateCurso() {
+export default function CreateUserStatus() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { resolvedTheme } = useTheme();
@@ -41,18 +41,16 @@ export default function CreateCurso() {
     resolver: yupResolver(schema),
   });
 
-  // 🔹 Continuar cadastrando
+  // Continuar cadastrando (limpa o formulário após sucesso)
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
-      const payload = { ...data, guard_name: "sanctum" };
-      const response = await instance.post("/roles", payload);
+      const response = await instance.post("/user-status", data);
       reset(); // limpa formulário
-
       SwalAlert({
         type: "success",
         title: "Sucesso!",
-        text: response.data.message || "Perfil cadastrado com sucesso!",
+        text: response.data.message || "Status cadastrado com sucesso!",
         theme: currentTheme,
       });
     } catch (err: unknown) {
@@ -63,7 +61,7 @@ export default function CreateCurso() {
           text:
             err.response.data.message ||
             err.response.data.error ||
-            "Erro inesperado ao cadastrar perfil.",
+            "Erro ao cadastrar status.",
           theme: currentTheme,
         });
       } else {
@@ -79,19 +77,17 @@ export default function CreateCurso() {
     }
   };
 
-  // 🔹 Salvar e voltar
+  // Salvar e voltar
   const handleSubmitAndRedirect = handleSubmit(async (data: FormData) => {
     setLoading(true);
     try {
-      const payload = { ...data, guard_name: "sanctum" };
-      const response = await instance.post("/roles", payload);
-
+      const response = await instance.post("/user-status", data);
       SwalAlert({
         type: "success",
         title: "Sucesso!",
-        text: response.data.message || "Perfil cadastrado com sucesso!",
+        text: response.data.message || "Status cadastrado com sucesso!",
         theme: currentTheme,
-        confirmCallback: () => router.push("/painel/roles/list"),
+        confirmCallback: () => router.push("/painel/user-status/list"),
       });
     } catch (err: unknown) {
       if (err instanceof AxiosError && err.response) {
@@ -101,7 +97,7 @@ export default function CreateCurso() {
           text:
             err.response.data.message ||
             err.response.data.error ||
-            "Erro inesperado ao cadastrar perfil.",
+            "Erro ao cadastrar status.",
           theme: currentTheme,
         });
       } else {
@@ -120,17 +116,16 @@ export default function CreateCurso() {
   return (
     <Layout>
       <main className="main-content">
-        {/* Cabeçalho */}
         <div className="content-wrapper">
           <div className="content-header">
-            <h2 className="content-title">Perfil</h2>
+            <h2 className="content-title">Status Usuário</h2>
             <nav className="breadcrumb">
               <Link href="/painel/dashboard" className="breadcrumb-link">
                 Dashboard
               </Link>
               <span> / </span>
-              <Link href="/painel/roles/list" className="breadcrumb-link">
-                Perfil
+              <Link href="/painel/user-status/list" className="breadcrumb-link">
+                Status Usuário
               </Link>
               <span> / </span>
               <span>Novo</span>
@@ -140,10 +135,10 @@ export default function CreateCurso() {
 
         <div className="content-box">
           <div className="content-box-header">
-            <h3 className="content-box-title">Novo Perfil</h3>
+            <h3 className="content-box-title">Novo Status</h3>
             <div className="content-box-btn">
               <Link
-                href="/painel/roles/list"
+                href="/painel/user-status/list"
                 className="btn-info flex items-center gap-2"
               >
                 <LuList /> Visualizar
@@ -157,11 +152,11 @@ export default function CreateCurso() {
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
                 <label htmlFor="name" className="form-label">
-                  Perfil
+                  Status Usuário
                 </label>
                 <input
                   type="text"
-                  placeholder="Nome do Perfil"
+                  placeholder="Nome do Status"
                   {...register("name")}
                   className="form-input"
                 />

@@ -56,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
       label: "Perfis",
     },
     {
-      href: "/painel/user-statuses/list",
+      href: "/painel/user-status/list",
       icon: <LuUserCog size={18} />,
       label: "Status Usuários",
     },

@@ -7,13 +7,15 @@ import * as yup from "yup";
 import { AxiosError } from "axios";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTheme } from "next-themes";
+
 import instance from "@/services/api";
 import Layout from "@/components/Painel/Layout";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { LuPlus, LuSave, LuList } from "react-icons/lu";
-import AlertMessageDismissible from "@/components/AlertMessageDismissible";
+import { SwalAlert } from "@/components/SwalAlert";
 
-// Schema de validação com Yup
+// Schema de validação
 const schema = yup.object().shape({
   name: yup
     .string()
@@ -21,76 +23,82 @@ const schema = yup.object().shape({
     .min(3, "O nome do curso deve conter pelo menos 3 letras."),
 });
 
+type FormData = { name: string };
+
 export default function EditCurso() {
   const { id } = useParams();
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
+  const currentTheme: "dark" | "light" =
+    resolvedTheme === "dark" ? "dark" : "light";
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
-  // Configuração do formulário
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<{ name: string }>({
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
 
-  // Buscar detalhes do curso ao carregar
+  // Buscar detalhes do curso
   useEffect(() => {
-    const fetchCursoDetails = async () => {
+    const fetchCurso = async () => {
+      if (!id) return;
+      setLoading(true);
       try {
-        setLoading(true);
         const response = await instance.get(`/cursos/${id}`);
-        setValue("name", response.data.name); // preenche o formulário
+        setValue("name", response.data.name);
       } catch (err: unknown) {
-        if (err instanceof AxiosError) {
-          setError(
-            err.response?.data?.message ||
-              err.response?.data?.error ||
-              "Erro ao carregar o curso."
-          );
-        } else if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("Erro desconhecido.");
-        }
+        SwalAlert({
+          type: "error",
+          title: "Erro",
+          text:
+            err instanceof AxiosError
+              ? err.response?.data?.message ||
+                err.response?.data?.error ||
+                "Erro ao carregar o curso."
+              : err instanceof Error
+              ? err.message
+              : "Erro desconhecido.",
+          theme: currentTheme,
+        });
       } finally {
         setLoading(false);
       }
     };
+    fetchCurso();
+  }, [id, setValue, currentTheme]);
 
-    if (id) fetchCursoDetails();
-  }, [id, setValue]);
-
-  // Função genérica para salvar
-  const onSubmit = async (
-    data: { name: string },
-    redirectAfterSave: boolean
-  ) => {
+  const onSubmit = async (data: FormData, redirectAfterSave: boolean) => {
     setLoading(true);
-    setError(null);
-    setSuccess(null);
 
     try {
-      const response = await instance.put(`/cursos/${id}`, data);
-      setSuccess(response.data.message || "Curso atualizado com sucesso!");
-      if (redirectAfterSave) router.push("/painel/cursos/list");
+      await instance.put(`/cursos/${id}`, data);
+
+      SwalAlert({
+        type: "success",
+        title: "Sucesso",
+        text: "Curso atualizado com sucesso!",
+        theme: currentTheme,
+        confirmCallback: redirectAfterSave
+          ? () => router.push("/painel/cursos/list")
+          : undefined,
+      });
     } catch (err: unknown) {
-      if (err instanceof AxiosError) {
-        setError(
-          err.response?.data?.message ||
-            err.response?.data?.error ||
-            "Erro inesperado ao atualizar curso."
-        );
-      } else if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Erro desconhecido.");
-      }
+      SwalAlert({
+        type: "error",
+        title: "Erro",
+        text:
+          err instanceof AxiosError && err.response
+            ? err.response.data.message ||
+              err.response.data.error ||
+              "Erro inesperado ao atualizar curso."
+            : "Erro de conexão com o servidor, tente novamente mais tarde.",
+        theme: currentTheme,
+      });
     } finally {
       setLoading(false);
     }
@@ -99,7 +107,6 @@ export default function EditCurso() {
   return (
     <Layout>
       <main className="main-content">
-        {/* Título e Trilha de Navegação */}
         <div className="content-wrapper">
           <div className="content-header">
             <h2 className="content-title">Curso</h2>
@@ -123,7 +130,7 @@ export default function EditCurso() {
             <div className="content-box-btn">
               <Link
                 href={`/painel/cursos/list`}
-                className="btn-info  flex items-center gap-2"
+                className="btn-info flex items-center gap-2"
               >
                 <LuList /> Visualizar
               </Link>
@@ -131,14 +138,8 @@ export default function EditCurso() {
           </div>
 
           <div className="content-box-body">
-            {loading && LoadingSpinner()}
-            <AlertMessageDismissible type="error" message={error} />
+            {loading && <LoadingSpinner />}
 
-            {success && (
-              <AlertMessageDismissible type="success" message={success} />
-            )}
-
-            {/* Formulário */}
             <form onSubmit={handleSubmit((data) => onSubmit(data, false))}>
               <div className="mb-4">
                 <label htmlFor="name" className="form-label">
@@ -147,22 +148,20 @@ export default function EditCurso() {
                 <input
                   type="text"
                   placeholder="Nome do Curso"
-                  {...register("name")} // integração com react-hook-form
+                  {...register("name")}
                   className="form-input"
                 />
-                {/* Mensagem de erro do Yup */}
                 {errors.name && (
                   <p style={{ color: "red" }}>{errors.name.message}</p>
                 )}
               </div>
 
               <div className="content-box-footer-btn">
-                {/* Botão 1: Cadastrar e voltar */}
                 <button
                   type="button"
                   onClick={handleSubmit((data) => onSubmit(data, true))}
                   disabled={loading}
-                  className="btn-success flex items-center space-x-1 "
+                  className="btn-success flex items-center space-x-1"
                   style={{ marginLeft: "10px" }}
                 >
                   {loading ? (
@@ -174,7 +173,6 @@ export default function EditCurso() {
                     </>
                   )}
                 </button>
-                {/* Botão 2: Cadastrar e continuar */}
 
                 <button
                   type="submit"

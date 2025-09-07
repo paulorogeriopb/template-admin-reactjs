@@ -7,13 +7,15 @@ import * as yup from "yup";
 import { AxiosError } from "axios";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTheme } from "next-themes";
+
 import instance from "@/services/api";
 import Layout from "@/components/Painel/Layout";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { LuPlus, LuSave, LuList } from "react-icons/lu";
-import AlertMessageDismissible from "@/components/AlertMessageDismissible";
+import { SwalAlert } from "@/components/SwalAlert";
 
-// Schema de validação com Yup
+// Schema de validação
 const schema = yup.object().shape({
   name: yup
     .string()
@@ -24,39 +26,47 @@ const schema = yup.object().shape({
 export default function EditRole() {
   const { id } = useParams();
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
+  const currentTheme: "dark" | "light" =
+    resolvedTheme === "dark" ? "dark" : "light";
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
-  // Configuração do formulário
   const {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<{ name: string }>({
     resolver: yupResolver(schema),
   });
 
-  // Buscar detalhes do perfil ao carregar
+  // Buscar detalhes do perfil
   useEffect(() => {
     const fetchRoleDetails = async () => {
       try {
         setLoading(true);
         const response = await instance.get(`/roles/${id}`);
-        setValue("name", response.data.data.name); // preenche o formulário
+        setValue("name", response.data.data.name);
       } catch (err: unknown) {
-        if (err instanceof AxiosError) {
-          setError(
-            err.response?.data?.message ||
-              err.response?.data?.error ||
-              "Erro ao carregar o perfil."
-          );
-        } else if (err instanceof Error) {
-          setError(err.message);
+        if (err instanceof AxiosError && err.response) {
+          SwalAlert({
+            type: "error",
+            title: "Erro",
+            text:
+              err.response.data.message ||
+              err.response.data.error ||
+              "Erro ao carregar o perfil.",
+            theme: currentTheme,
+          });
         } else {
-          setError("Erro desconhecido.");
+          SwalAlert({
+            type: "error",
+            title: "Erro",
+            text: "Erro desconhecido.",
+            theme: currentTheme,
+          });
         }
       } finally {
         setLoading(false);
@@ -64,32 +74,47 @@ export default function EditRole() {
     };
 
     if (id) fetchRoleDetails();
-  }, [id, setValue]);
+  }, [id, setValue, currentTheme]);
 
-  // Função genérica para salvar
+  // Salvar (com opção de redirecionar)
   const onSubmit = async (
     data: { name: string },
-    redirectAfterSave: boolean
+    redirectAfterSave = false
   ) => {
     setLoading(true);
-    setError(null);
-    setSuccess(null);
-
     try {
       const response = await instance.put(`/roles/${id}`, data);
-      setSuccess(response.data.message || "Perfil atualizado com sucesso!");
-      if (redirectAfterSave) router.push("/painel/roles/list");
+
+      SwalAlert({
+        type: "success",
+        title: "Sucesso!",
+        text: response.data.message || "Perfil atualizado com sucesso!",
+        theme: currentTheme,
+        confirmCallback: () => {
+          if (redirectAfterSave) router.push("/painel/roles/list");
+        },
+      });
+
+      // Limpa o formulário apenas se não for redirecionar
+      if (!redirectAfterSave) reset({ name: data.name });
     } catch (err: unknown) {
-      if (err instanceof AxiosError) {
-        setError(
-          err.response?.data?.message ||
-            err.response?.data?.error ||
-            "Erro inesperado ao atualizar perfil."
-        );
-      } else if (err instanceof Error) {
-        setError(err.message);
+      if (err instanceof AxiosError && err.response) {
+        SwalAlert({
+          type: "error",
+          title: "Erro",
+          text:
+            err.response.data.message ||
+            err.response.data.error ||
+            "Erro ao atualizar perfil.",
+          theme: currentTheme,
+        });
       } else {
-        setError("Erro desconhecido.");
+        SwalAlert({
+          type: "error",
+          title: "Erro",
+          text: "Erro desconhecido.",
+          theme: currentTheme,
+        });
       }
     } finally {
       setLoading(false);
@@ -99,7 +124,7 @@ export default function EditRole() {
   return (
     <Layout>
       <main className="main-content">
-        {/* Título e Trilha de Navegação */}
+        {/* Cabeçalho */}
         <div className="content-wrapper">
           <div className="content-header">
             <h2 className="content-title">Perfil</h2>
@@ -119,11 +144,11 @@ export default function EditRole() {
 
         <div className="content-box">
           <div className="content-box-header">
-            <h3 className="content-box-title">Editar</h3>
+            <h3 className="content-box-title">Editar Perfil</h3>
             <div className="content-box-btn">
               <Link
-                href={`/painel/roles/list`}
-                className="btn-info  flex items-center gap-2"
+                href="/painel/roles/list"
+                className="btn-info flex items-center gap-2"
               >
                 <LuList /> Visualizar
               </Link>
@@ -131,14 +156,8 @@ export default function EditRole() {
           </div>
 
           <div className="content-box-body">
-            {loading && LoadingSpinner()}
-            <AlertMessageDismissible type="error" message={error} />
+            {loading && <LoadingSpinner />}
 
-            {success && (
-              <AlertMessageDismissible type="success" message={success} />
-            )}
-
-            {/* Formulário */}
             <form onSubmit={handleSubmit((data) => onSubmit(data, false))}>
               <div className="mb-4">
                 <label htmlFor="name" className="form-label">
@@ -147,35 +166,33 @@ export default function EditRole() {
                 <input
                   type="text"
                   placeholder="Nome do Perfil"
-                  {...register("name")} // integração com react-hook-form
+                  {...register("name")}
                   className="form-input"
                 />
-                {/* Mensagem de erro do Yup */}
                 {errors.name && (
                   <p style={{ color: "red" }}>{errors.name.message}</p>
                 )}
               </div>
 
               <div className="content-box-footer-btn">
-                {/* Botão 1: Cadastrar e voltar */}
+                {/* Salvar e voltar */}
                 <button
                   type="button"
                   onClick={handleSubmit((data) => onSubmit(data, true))}
                   disabled={loading}
-                  className="btn-success flex items-center space-x-1 "
+                  className="btn-success flex items-center space-x-1"
                   style={{ marginLeft: "10px" }}
                 >
                   {loading ? (
                     "Salvando..."
                   ) : (
                     <>
-                      <LuSave className="text-white" />
-                      Salvar
+                      <LuSave className="text-white" /> Salvar
                     </>
                   )}
                 </button>
-                {/* Botão 2: Cadastrar e continuar */}
 
+                {/* Continuar Editando */}
                 <button
                   type="submit"
                   disabled={loading}
@@ -185,8 +202,7 @@ export default function EditRole() {
                     "Editando..."
                   ) : (
                     <>
-                      <LuPlus className="text-white" />
-                      Continuar Editando
+                      <LuPlus className="text-white" /> Continuar Editando
                     </>
                   )}
                 </button>
