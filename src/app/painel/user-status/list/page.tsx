@@ -28,7 +28,6 @@ export default function UserStatusList() {
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(pageFromUrl);
   const [lastPage, setLastPage] = useState<number>(1);
 
@@ -36,7 +35,6 @@ export default function UserStatusList() {
   const fetchUserStatuses = async (page: number) => {
     setLoading(true);
     setError(null);
-    setSuccess(null);
 
     try {
       const response = await instance.get(`/user-status?page=${page}`);
@@ -61,7 +59,6 @@ export default function UserStatusList() {
 
   // Callback após sucesso na exclusão
   const handleSuccess = () => {
-    setSuccess("Status do usuário deletado com sucesso!");
     fetchUserStatuses(currentPage);
   };
 
@@ -71,7 +68,6 @@ export default function UserStatusList() {
 
   const handlePageChange = (page: number) => {
     setError(null);
-    setSuccess(null);
     router.push(`?page=${page}`);
   };
 
@@ -109,9 +105,6 @@ export default function UserStatusList() {
           <div className="content-box-body">
             {loading && <LoadingSpinner />}
             <AlertMessageDismissible type="error" message={error} />
-            {success && (
-              <AlertMessageDismissible type="success" message={success} />
-            )}
 
             <div className="table-container mt-6">
               {!loading && !error && (
@@ -152,7 +145,6 @@ export default function UserStatusList() {
                               route={`/user-status`}
                               onSuccess={handleSuccess}
                               setError={setError}
-                              setSuccess={setSuccess}
                             />
                           </td>
                         </tr>

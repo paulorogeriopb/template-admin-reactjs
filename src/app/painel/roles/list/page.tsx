@@ -9,7 +9,7 @@ import Pagination from "@/components/Pagination";
 import DeleteButton from "@/components/DeleteButton";
 import Layout from "@/components/Painel/Layout";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { LuCirclePlus, LuEye, LuSquarePen } from "react-icons/lu";
+import { LuCirclePlus, LuEye, LuSquarePen, LuSearch } from "react-icons/lu";
 import AlertMessageDismissible from "@/components/AlertMessageDismissible";
 
 type Role = {
@@ -28,7 +28,7 @@ export default function RolesList() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [search, setSearch] = useState<string>(""); // campo de busca
   const [currentPage, setCurrentPage] = useState<number>(pageFromUrl);
   const [lastPage, setLastPage] = useState<number>(1);
 
@@ -36,10 +36,11 @@ export default function RolesList() {
   const fetchRoles = async (page: number) => {
     setLoading(true);
     setError(null);
-    setSuccess(null);
 
     try {
-      const response = await instance.get(`/roles?page=${page}`);
+      const response = await instance.get(
+        `/roles?page=${page}&search=${encodeURIComponent(search)}`
+      );
       setRoles(response.data.data.data || []);
       setCurrentPage(response.data.current_page || page);
       setLastPage(response.data.last_page || 1);
@@ -59,9 +60,7 @@ export default function RolesList() {
     }
   };
 
-  // Callback após sucesso na exclusão
   const handleSuccess = () => {
-    setSuccess("Role deletado com sucesso!");
     fetchRoles(currentPage);
   };
 
@@ -71,7 +70,6 @@ export default function RolesList() {
 
   const handlePageChange = (page: number) => {
     setError(null);
-    setSuccess(null);
     router.push(`?page=${page}`);
   };
 
@@ -107,11 +105,29 @@ export default function RolesList() {
           </div>
 
           <div className="content-box-body">
+            {/* Campo de busca */}
+            <div className="mb-4 flex gap-2 items-center">
+              <input
+                type="text"
+                placeholder="Pesquisar perfis..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") fetchRoles(1);
+                }}
+                className="form-input"
+              />
+              <button
+                onClick={() => fetchRoles(1)}
+                className="btn-default flex items-center gap-2 py-3"
+              >
+                <LuSearch size={20} />
+                Buscar
+              </button>
+            </div>
+
             {loading && <LoadingSpinner />}
             <AlertMessageDismissible type="error" message={error} />
-            {success && (
-              <AlertMessageDismissible type="success" message={success} />
-            )}
 
             <div className="table-container mt-6">
               {!loading && !error && (
@@ -168,7 +184,6 @@ export default function RolesList() {
               )}
             </div>
 
-            {/* Paginação */}
             {!loading && !error && roles.length > 0 && (
               <Pagination
                 currentPage={currentPage}
