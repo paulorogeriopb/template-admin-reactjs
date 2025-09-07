@@ -1,14 +1,16 @@
+// DeleteButton.tsx
 import { useState } from "react";
 import { AxiosError } from "axios";
 import instance from "@/services/api";
 import { LuTrash2 } from "react-icons/lu";
+import Swal from "sweetalert2";
 
+// Interface atualizada
 interface DeleteButtonProps {
-  id: string; // ID do item a ser deletado
-  route: string; // Rota da API para deletar o item
-  onSuccess: () => void; // Atualiza a lista após exclusão
-  setError: (message: string | null) => void; // Exibe mensagem de erro
-  setSuccess: (message: string | null) => void; // Exibe mensagem de sucesso
+  id: string;
+  route: string;
+  onSuccess: () => void;
+  setError: (message: string | null) => void;
 }
 
 const DeleteButton = ({
@@ -16,41 +18,63 @@ const DeleteButton = ({
   route,
   onSuccess,
   setError,
-  setSuccess,
 }: DeleteButtonProps) => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
-    // Pergunta ao usuário se deseja realmente excluir
-    const confirmed = window.confirm("Deseja realmente excluir?");
-    if (!confirmed) return; // se cancelar, não faz nada
+    const result = await Swal.fire({
+      title: "Tem certeza?",
+      text: "Deseja realmente excluir este item?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim",
+      cancelButtonText: "Não",
+      confirmButtonColor: "#32a2b9",
+      cancelButtonColor: "#dc2626",
+      reverseButtons: true,
+    });
 
-    if (loading) return; // evita múltiplos cliques
+    if (!result.isConfirmed) return;
+
     setLoading(true);
     setError(null);
-    setSuccess(null);
 
     try {
       await instance.delete(`${route}/${id}`);
-
-      // Atualiza a lista
-      onSuccess();
-
-      // Exibe mensagem de sucesso
-      setSuccess("Deletado com sucesso!");
-
-      // Opcional: sumir com a mensagem após 3 segundos
-      setTimeout(() => setSuccess(null), 3000);
+      onSuccess(); // atualiza a lista
+      Swal.fire({
+        title: "Sucesso!",
+        text: "O item foi removido com sucesso.",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        const data = error.response?.data;
-        setError(
-          data?.message || data?.error || "Erro inesperado ao deletar curso."
-        );
+        const msg =
+          error.response?.data?.message ||
+          error.response?.data?.error ||
+          "Erro inesperado ao deletar.";
+        setError(msg);
+        Swal.fire({
+          title: "Erro",
+          text: msg,
+          icon: "error",
+        });
       } else if (error instanceof Error) {
         setError(error.message);
+        Swal.fire({
+          title: "Erro",
+          text: error.message,
+          icon: "error",
+        });
       } else {
         setError("Erro desconhecido");
+        Swal.fire({
+          title: "Erro",
+          text: "Erro desconhecido",
+          icon: "error",
+        });
       }
     } finally {
       setLoading(false);

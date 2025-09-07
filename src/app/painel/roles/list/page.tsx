@@ -152,7 +152,6 @@ export default function RolesList() {
                               route={`/roles`}
                               onSuccess={handleSuccess}
                               setError={setError}
-                              setSuccess={setSuccess}
                             />
                           </td>
                         </tr>
