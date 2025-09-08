@@ -5,12 +5,12 @@ import instance from "@/services/api";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { AxiosError } from "axios";
-import Pagination from "@/components/Pagination";
-import DeleteButton from "@/components/DeleteButton";
+import Pagination from "@/components/Painel/Pagination";
 import Layout from "@/components/Painel/Layout";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { LuCirclePlus, LuEye, LuSquarePen } from "react-icons/lu";
+import { LuCirclePlus, LuSearch } from "react-icons/lu";
 import AlertMessageDismissible from "@/components/AlertMessageDismissible";
+import ActionButtons from "@/components/Painel/ActionButtonsBasic";
 
 type UserStatus = {
   id: number;
@@ -31,13 +31,15 @@ export default function UserStatusList() {
   const [currentPage, setCurrentPage] = useState<number>(pageFromUrl);
   const [lastPage, setLastPage] = useState<number>(1);
 
+  const [openId, setOpenId] = useState<number | null>(null);
+
   // Buscar status de usuários da API
   const fetchUserStatuses = async (page: number) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await instance.get(`/user-status?page=${page}`);
+      const response = await instance.get(`/user-status?page=${page}}`);
       setUserStatuses(response.data.data || []);
       setCurrentPage(response.data.current_page || page);
       setLastPage(response.data.last_page || 1);
@@ -69,6 +71,11 @@ export default function UserStatusList() {
   const handlePageChange = (page: number) => {
     setError(null);
     router.push(`?page=${page}`);
+  };
+
+  const handleSearch = () => {
+    setError(null);
+    fetchUserStatuses(1);
   };
 
   return (
@@ -106,6 +113,7 @@ export default function UserStatusList() {
             {loading && <LoadingSpinner />}
             <AlertMessageDismissible type="error" message={error} />
 
+            {/* Tabela */}
             <div className="table-container mt-6">
               {!loading && !error && (
                 <table className="table">
@@ -123,28 +131,15 @@ export default function UserStatusList() {
                         <tr className="table-row-body" key={status.id}>
                           <td className="table-body">{status.id}</td>
                           <td className="table-body">{status.name}</td>
-                          <td className="table-body table-actions flex gap-2">
-                            <Link
-                              href={`/painel/user-status/${status.id}`}
-                              className="btn-primary flex items-center gap-2"
-                              aria-label={`Visualizar status ${status.name}`}
-                            >
-                              <LuEye /> Visualizar
-                            </Link>
-
-                            <Link
-                              href={`/painel/user-status/${status.id}/edit`}
-                              className="btn-warning flex items-center gap-2"
-                              aria-label={`Editar status ${status.name}`}
-                            >
-                              <LuSquarePen /> Editar
-                            </Link>
-
-                            <DeleteButton
-                              id={String(status.id)}
-                              route={`/user-status`}
+                          <td className="table-body table-actions">
+                            <ActionButtons
+                              id={status.id}
+                              basePath="/painel/user-status"
+                              entityName="status"
                               onSuccess={handleSuccess}
                               setError={setError}
+                              openId={openId}
+                              setOpenId={setOpenId}
                             />
                           </td>
                         </tr>

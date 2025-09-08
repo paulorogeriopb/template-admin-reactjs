@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import DarkModeProvider from "@/components/DarkMode"; // ajuste o caminho se necessário
+import DarkModeProvider from "@/components/Painel/DarkMode"; // ajuste o caminho se necessário
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

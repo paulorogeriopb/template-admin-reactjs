@@ -30,7 +30,7 @@ const DeleteButton = ({
       confirmButtonText: "Sim",
       cancelButtonText: "Não",
       confirmButtonColor: "#32a2b9",
-      cancelButtonColor: "#dc2626",
+      cancelButtonColor: "#db4d52",
       reverseButtons: true,
     });
 

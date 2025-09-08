@@ -23,7 +23,7 @@ export const SwalAlert = ({
     title,
     text,
     confirmButtonText: "OK",
-    confirmButtonColor: type === "success" ? "#32a2b9" : "#dc2626", // azul para sucesso, vermelho para erro
+    confirmButtonColor: type === "success" ? "#32a2b9" : "#db4d52", // azul para sucesso, vermelho para erro
     background: theme === "dark" ? "#1f2937" : "#ffffff",
     color: theme === "dark" ? "#f9fafb" : "#111827",
   }).then(() => {

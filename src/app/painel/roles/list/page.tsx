@@ -5,12 +5,12 @@ import instance from "@/services/api";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { AxiosError } from "axios";
-import Pagination from "@/components/Pagination";
-import DeleteButton from "@/components/DeleteButton";
+import Pagination from "@/components/Painel/Pagination";
 import Layout from "@/components/Painel/Layout";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { LuCirclePlus, LuEye, LuSquarePen, LuSearch } from "react-icons/lu";
+import { LuCirclePlus, LuSearch } from "react-icons/lu";
 import AlertMessageDismissible from "@/components/AlertMessageDismissible";
+import ActionButtons from "@/components/Painel/ActionButtonsBasic";
 
 type Role = {
   id: number;
@@ -28,11 +28,13 @@ export default function RolesList() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState<string>(""); // campo de busca
+  const [search, setSearch] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(pageFromUrl);
   const [lastPage, setLastPage] = useState<number>(1);
 
-  // Buscar Roles da API
+  const [openId, setOpenId] = useState<number | null>(null);
+
+  // Buscar roles da API
   const fetchRoles = async (page: number) => {
     setLoading(true);
     setError(null);
@@ -71,6 +73,11 @@ export default function RolesList() {
   const handlePageChange = (page: number) => {
     setError(null);
     router.push(`?page=${page}`);
+  };
+
+  const handleSearch = () => {
+    setError(null);
+    fetchRoles(1);
   };
 
   return (
@@ -113,13 +120,13 @@ export default function RolesList() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") fetchRoles(1);
+                  if (e.key === "Enter") handleSearch();
                 }}
                 className="form-input"
               />
               <button
-                onClick={() => fetchRoles(1)}
-                className="btn-default flex items-center gap-2 py-3"
+                onClick={handleSearch}
+                className="btn-default flex items-center gap-2 py-2 px-4"
               >
                 <LuSearch size={20} />
                 Buscar
@@ -132,7 +139,7 @@ export default function RolesList() {
             <div className="table-container mt-6">
               {!loading && !error && (
                 <table className="table">
-                  <caption className="sr-only">Lista de Roles</caption>
+                  <caption className="sr-only">Lista de Perfis</caption>
                   <thead>
                     <tr className="table-row-header">
                       <th className="table-header">ID</th>
@@ -146,28 +153,15 @@ export default function RolesList() {
                         <tr className="table-row-body" key={role.id}>
                           <td className="table-body">{role.id}</td>
                           <td className="table-body">{role.name}</td>
-                          <td className="table-body table-actions flex gap-2">
-                            <Link
-                              href={`/painel/roles/${role.id}`}
-                              className="btn-primary flex items-center gap-2"
-                              aria-label={`Visualizar role ${role.name}`}
-                            >
-                              <LuEye /> Visualizar
-                            </Link>
-
-                            <Link
-                              href={`/painel/roles/${role.id}/edit`}
-                              className="btn-warning flex items-center gap-2"
-                              aria-label={`Editar role ${role.name}`}
-                            >
-                              <LuSquarePen /> Editar
-                            </Link>
-
-                            <DeleteButton
-                              id={String(role.id)}
-                              route={`/roles`}
+                          <td className="table-body table-actions">
+                            <ActionButtons
+                              id={role.id}
+                              basePath="/painel/roles"
+                              entityName="perfil"
                               onSuccess={handleSuccess}
                               setError={setError}
+                              openId={openId}
+                              setOpenId={setOpenId}
                             />
                           </td>
                         </tr>

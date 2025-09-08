@@ -382,18 +382,6 @@
     @apply inline-block;
   }
 
-  .table-zebra-light tr:nth-child(odd) {
-    @apply bg-gray-100 dark:bg-(--dark-secondary);
-  }
-
-  .table-zebra-light tr:nth-child(even) {
-    @apply bg-white dark:bg-(--dark-tertiary);
-  }
-
-  .table-zebra-light tr:hover {
-    @apply bg-gray-200 dark:bg-(--dark-secondary) cursor-pointer;
-  }
-
   /****** Fim Tabela Listar Registros ******/
 
   /****** Início Formulário ******/

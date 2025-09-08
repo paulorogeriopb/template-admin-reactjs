@@ -3,14 +3,16 @@
 import Link from "next/link";
 import { LuEye, LuSquarePen, LuTrash2 } from "react-icons/lu";
 import { IoMdMore } from "react-icons/io";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 import DeleteButton from "@/components/DeleteButton";
 import DeleteButtonNoStyle from "@/components/DeleteButtonNoStyle";
 
 interface ActionButtonsProps {
   id: number | string;
-  basePath: string; // ex: "/painel/cursos"
-  entityName: string; // ex: "curso"
+  basePath: string;
+  entityName: string;
   onSuccess: () => void;
   setError: (message: string | null) => void;
   openId: number | null;
@@ -20,17 +22,40 @@ interface ActionButtonsProps {
 export default function ActionButtons({
   id,
   basePath,
-  entityName,
   onSuccess,
   setError,
   openId,
   setOpenId,
 }: ActionButtonsProps) {
   const isOpen = openId === id;
+  const [buttonPos, setButtonPos] = useState<{ top: number; left: number }>({
+    top: 0,
+    left: 0,
+  });
 
-  const toggleOpen = () => {
+  const toggleOpen = (e?: React.MouseEvent) => {
+    if (!isOpen && e?.currentTarget) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const menuWidth = 215; // w-44 ≈ 44*4 = 176px
+
+      let left = rect.right + window.scrollX - menuWidth;
+      // Evita que o menu saia da tela à esquerda
+      if (left < 0) left = 0;
+
+      setButtonPos({
+        top: rect.bottom + window.scrollY - 22,
+        left,
+      });
+    }
     setOpenId(isOpen ? null : Number(id));
   };
+
+  // Fechar dropdown ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = () => setOpenId(null);
+    if (isOpen) document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [isOpen, setOpenId]);
 
   return (
     <div>
@@ -59,21 +84,35 @@ export default function ActionButtons({
       </div>
 
       {/* Mobile */}
-      <div className="relative lg:hidden">
+      <div className="relative lg:hidden inline-block">
         <button
           type="button"
-          onClick={toggleOpen}
+          onClick={(e) => {
+            e.stopPropagation(); // evita fechar ao clicar no botão
+            toggleOpen(e);
+          }}
           className="btn-light p-2 rounded-full"
         >
           <IoMdMore className="w-5 h-5" />
         </button>
+      </div>
 
-        {isOpen && (
-          <ul className="fixed right-0 mt-2 w-44 bg-(--light-primary) dark:bg-(--dark-secondary)  rounded-lg shadow-lg z-50">
+      {/* Dropdown via Portal */}
+      {isOpen &&
+        typeof window !== "undefined" &&
+        createPortal(
+          <ul
+            style={{
+              position: "absolute",
+              top: `${buttonPos.top}px`,
+              left: `${buttonPos.left}px`,
+            }}
+            className="w-44 bg-(--light-primary) dark:bg-(--dark-primary) rounded-lg shadow-lg z-[9999]"
+          >
             <li>
               <Link
                 href={`${basePath}/${id}`}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) hover:text-(--default)  "
+                className="flex items-center gap-2 px-4 py-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) hover:text-(--default)"
                 onClick={() => setOpenId(null)}
               >
                 <LuEye /> Visualizar
@@ -82,7 +121,7 @@ export default function ActionButtons({
             <li>
               <Link
                 href={`${basePath}/${id}/edit`}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) hover:text-(--default) "
+                className="flex items-center gap-2 px-4 py-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) hover:text-(--default)"
                 onClick={() => setOpenId(null)}
               >
                 <LuSquarePen /> Editar
@@ -103,9 +142,9 @@ export default function ActionButtons({
                 </div>
               </DeleteButtonNoStyle>
             </li>
-          </ul>
+          </ul>,
+          document.body
         )}
-      </div>
     </div>
   );
 }

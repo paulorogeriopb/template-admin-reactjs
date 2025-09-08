@@ -12,7 +12,7 @@ import {
   LuSun,
   LuAlignJustify,
 } from "react-icons/lu";
-import { useDarkMode } from "@/components/DarkMode";
+import { useDarkMode } from "@/components/Painel/DarkMode";
 
 const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
   const router = useRouter();
@@ -21,22 +21,32 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Fecha o dropdown ao clicar fora
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setDropdownOpen(false);
       }
-    }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     router.push("/auth/login");
+    setDropdownOpen(false);
+  };
+
+  const handleDropdownItemClick = () => {
+    setDropdownOpen(false); // fecha ao clicar em qualquer item
   };
 
   return (
@@ -52,6 +62,7 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
           style={{ width: "160px", height: "auto", objectFit: "contain" }}
           priority
         />
+
         <button
           id="toggleSidebar"
           className="menu-button"
@@ -65,7 +76,7 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
             <button
               id="themeToggle"
               className="themeToggle"
-              onClick={toggleTheme} // usa provider
+              onClick={toggleTheme}
             >
               <div id="themeToggleThumb" className="themeToggleThumb">
                 <LuMoon
@@ -84,7 +95,7 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
             </button>
           </div>
 
-          <div ref={dropdownRef}>
+          <div ref={dropdownRef} className="relative">
             <button
               id="userDropdownButton"
               className="dropdown-button"
@@ -93,15 +104,18 @@ const Navbar = ({ setIsOpen }: { setIsOpen: (isOpen: boolean) => void }) => {
               Usuário
               <LuChevronDown />
             </button>
+
             {dropdownOpen && (
               <div id="dropdownContent" className="dropdown-content">
                 <Link
                   href="#"
+                  onClick={handleDropdownItemClick}
                   className="dropdown-item flex items-center gap-2"
                 >
                   <LuCircleUserRound size={20} />
                   Perfil
                 </Link>
+
                 <Link
                   href="/auth/login"
                   onClick={(e) => {

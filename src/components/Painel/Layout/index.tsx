@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import Navbar from "../../Painel/Navbar";
 import Sidebar from "../../Painel/Siderbar";
 //Importar o Hooks responsável pela proteção de rotas
-import { ProtectedRoute } from "../../ProtectedRoute";
+import { ProtectedRoute } from "../ProtectedRoute";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,10 +18,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         {/* Navbar */}
         <Navbar setIsOpen={setIsOpen} />
         {/* Content */}
-        <div className="flex">
-          <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
-          {children}
-        </div>
+
+        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+        {children}
       </div>
     </ProtectedRoute>
   );

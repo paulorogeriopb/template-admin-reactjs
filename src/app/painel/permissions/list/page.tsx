@@ -12,45 +12,46 @@ import { LuCirclePlus, LuSearch } from "react-icons/lu";
 import AlertMessageDismissible from "@/components/AlertMessageDismissible";
 import ActionButtons from "@/components/Painel/ActionButtonsBasic";
 
-type Curso = {
+type Permission = {
   id: number;
+  title: string;
   name: string;
   created_at: string;
   updated_at: string;
 };
 
-export default function CursosList() {
+export default function PermissionsList() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [search, setSearch] = useState<string>("");
   const pageFromUrl = Number(searchParams.get("page")) || 1;
 
-  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [permissions, setPermissions] = useState<Permission[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(pageFromUrl);
   const [lastPage, setLastPage] = useState<number>(1);
 
-  const [openId, setOpenId] = useState<number | null>(null); // para controlar dropdown mobile
+  const [openId, setOpenId] = useState<number | null>(null);
 
-  // Buscar cursos da API
-  const fetchCursos = async (page: number) => {
+  // Buscar permissions da API
+  const fetchPermissions = async (page: number) => {
     setLoading(true);
     setError(null);
 
     try {
       const response = await instance.get(
-        `/cursos?page=${page}&search=${encodeURIComponent(search)}`
+        `/permissions?page=${page}&search=${encodeURIComponent(search)}`
       );
-      setCursos(response.data.data || []);
+      setPermissions(response.data.data.data || []);
       setCurrentPage(response.data.current_page || page);
       setLastPage(response.data.last_page || 1);
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         const data = err.response?.data;
         setError(
-          data?.message || data?.error || "Erro inesperado ao carregar cursos."
+          data?.message || data?.error || "Erro inesperado ao carregar Perfis."
         );
       } else if (err instanceof Error) {
         setError(err.message);
@@ -62,13 +63,12 @@ export default function CursosList() {
     }
   };
 
-  // Callback após sucesso na exclusão
   const handleSuccess = () => {
-    fetchCursos(currentPage);
+    fetchPermissions(currentPage);
   };
 
   useEffect(() => {
-    fetchCursos(pageFromUrl);
+    fetchPermissions(pageFromUrl);
   }, [pageFromUrl]);
 
   const handlePageChange = (page: number) => {
@@ -78,31 +78,32 @@ export default function CursosList() {
 
   const handleSearch = () => {
     setError(null);
-    fetchCursos(1);
+    fetchPermissions(1);
   };
 
   return (
     <Layout>
       <main className="main-content">
+        {/* Header */}
         <div className="content-wrapper">
           <div className="content-header">
-            <h2 className="content-title">Cursos</h2>
+            <h2 className="content-title">Permissões</h2>
             <nav className="breadcrumb">
               <Link href="/painel/dashboard" className="breadcrumb-link">
                 Dashboard
               </Link>
               <span> / </span>
-              <span>Cursos</span>
+              <span>Permissões</span>
             </nav>
           </div>
         </div>
 
         <div className="content-box">
           <div className="content-box-header flex justify-between items-center">
-            <h3 className="content-box-title">Cursos</h3>
+            <h3 className="content-box-title">Permissões</h3>
             <div className="content-box-btn">
               <Link
-                href="/painel/cursos/create"
+                href="/painel/permissions/create"
                 className="btn-success flex items-center gap-1"
               >
                 <LuCirclePlus />
@@ -112,10 +113,11 @@ export default function CursosList() {
           </div>
 
           <div className="content-box-body">
-            <div className="mb-4 flex items-center gap-2">
+            {/* Campo de busca */}
+            <div className="mb-4 flex gap-2 items-center">
               <input
                 type="text"
-                placeholder="Pesquisar cursos..."
+                placeholder="Pesquisar perfis..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => {
@@ -135,28 +137,32 @@ export default function CursosList() {
             {loading && <LoadingSpinner />}
             <AlertMessageDismissible type="error" message={error} />
 
-            <div className="table-container mt-6">
+            <div className="table-container mt-6 overflow-x-auto">
               {!loading && !error && (
-                <table className="table">
-                  <caption className="sr-only">Lista de Cursos</caption>
+                <table className="table min-w-full">
+                  <caption className="sr-only">Lista de Permissões</caption>
                   <thead>
                     <tr className="table-row-header">
                       <th className="table-header">ID</th>
+                      <th className="table-header">Título</th>
                       <th className="table-header">Nome</th>
+                      {/* Ocultar em telas menores */}
                       <th className="table-header center">Ações</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {cursos.length > 0 ? (
-                      cursos.map((curso) => (
-                        <tr className="table-row-body" key={curso.id}>
-                          <td className="table-body">{curso.id}</td>
-                          <td className="table-body">{curso.name}</td>
-                          <td className="table-body table-actions">
+                  <tbody className="table-zebra-light">
+                    {permissions.length > 0 ? (
+                      permissions.map((permission) => (
+                        <tr className="table-row-body" key={permission.id}>
+                          <td className="table-body">{permission.id}</td>
+                          <td className="table-body">{permission.title}</td>
+                          <td className="table-body">{permission.name}</td>
+                          {/* Ocultar em telas menores */}
+                          <td className="table-body ">
                             <ActionButtons
-                              id={curso.id}
-                              basePath="/painel/cursos"
-                              entityName="curso"
+                              id={permission.id}
+                              basePath="/painel/permissions"
+                              entityName="perfil"
                               onSuccess={handleSuccess}
                               setError={setError}
                               openId={openId}
@@ -167,8 +173,8 @@ export default function CursosList() {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={3} className="text-center py-4">
-                          Nenhum curso encontrado
+                        <td colSpan={5} className="text-center py-4">
+                          Nenhuma permissão encontrada
                         </td>
                       </tr>
                     )}
@@ -177,7 +183,7 @@ export default function CursosList() {
               )}
             </div>
 
-            {!loading && !error && cursos.length > 0 && (
+            {!loading && !error && permissions.length > 0 && (
               <Pagination
                 currentPage={currentPage}
                 lastPage={lastPage}

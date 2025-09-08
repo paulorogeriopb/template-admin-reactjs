@@ -30,7 +30,7 @@ const DeleteButtonNoStyle = ({
       confirmButtonText: "Sim",
       cancelButtonText: "Não",
       confirmButtonColor: "#32a2b9",
-      cancelButtonColor: "#dc2626",
+      cancelButtonColor: "#db4d52",
       reverseButtons: true,
     });
 
@@ -73,7 +73,7 @@ const DeleteButtonNoStyle = ({
     <button
       onClick={handleDelete}
       disabled={loading}
-      className="block w-full text-left px-4 py-2  items-center gap-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) hover:text-(--default)  cursor-pointer"
+      className="btn-danger block w-full text-left px-4 py-2  items-center gap-2 cursor-pointer"
     >
       {loading
         ? "Excluindo..."
