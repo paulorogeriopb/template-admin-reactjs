@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.35](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.34...v0.1.35) (2025-09-08)
+
+
+### Features
+
+* criação das telas permissions, correção no layout tabela zebra ([c1cf22e](https://github.com/paulorogeriopb/template-admin-reactjs/commit/c1cf22eeea0d3399c2a03f6255cbb0404ebe1a6e))
+
 ### [0.1.34](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.33...v0.1.34) (2025-09-07)
 
 ### [0.1.33](https://github.com/paulorogeriopb/template-admin-reactjs/compare/v0.1.32...v0.1.33) (2025-09-07)
