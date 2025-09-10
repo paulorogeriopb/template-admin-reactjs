@@ -112,7 +112,7 @@ export default function ActionButtons({
             <li>
               <Link
                 href={`${basePath}/${id}`}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) hover:text-(--default)"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) text-gray-500 dark:text-gray-400 hover:text-(--default) border-b border-(--light-secondary) dark:border-(--dark-tertiary)"
                 onClick={() => setOpenId(null)}
               >
                 <LuEye /> Visualizar
@@ -121,7 +121,7 @@ export default function ActionButtons({
             <li>
               <Link
                 href={`${basePath}/${id}/edit`}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) hover:text-(--default)"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) text-gray-500 dark:text-gray-400  hover:text-(--default)"
                 onClick={() => setOpenId(null)}
               >
                 <LuSquarePen /> Editar

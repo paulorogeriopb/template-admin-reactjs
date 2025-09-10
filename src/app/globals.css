@@ -470,7 +470,7 @@
   }
 
   .pagination-button.active {
-    @apply bg-(--default) text-white border-(--sombra) shadow-md 
+    @apply bg-(--default) text-white border-(--light-tertiary) dark:border-(--sombra) shadow-md 
       dark:bg-(--dark-secondary) dark:text-(--default);
   }
 
