@@ -24,7 +24,7 @@ const schema = yup.object().shape({
 });
 
 export default function EditRole() {
-  const { id } = useParams();
+  const { roleId: id } = useParams();
   const router = useRouter();
   const { resolvedTheme } = useTheme();
   const currentTheme: "dark" | "light" =

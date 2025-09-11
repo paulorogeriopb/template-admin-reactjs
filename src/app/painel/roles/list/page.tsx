@@ -154,15 +154,10 @@ export default function RolesList() {
                           <td className="table-body">{role.id}</td>
                           <td className="table-body">{role.name}</td>
                           <td className="table-body table-actions">
-                            <Link
-                              href={`/painel/roles/${role.id}/permissions`}
-                              className="inline-flex items-center px-3 py-1 text-xs rounded btn-info"
-                            >
-                              Permissões
-                            </Link>
                             <ActionButtons
                               id={role.id}
                               basePath="/painel/roles"
+                              roleId={role.id} // ← necessário para o menu de Permissões
                               entityName="perfil"
                               onSuccess={handleSuccess}
                               setError={setError}

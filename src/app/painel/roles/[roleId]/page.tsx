@@ -20,7 +20,7 @@ type Role = {
 
 export default function RoleDetails() {
   //Usado useParams para acessar o parâmetro 'id' da URL
-  const { id } = useParams();
+  const { roleId: id } = useParams();
 
   // Estado para armazenar o role
   const [role, setRole] = useState<Role | null>(null);

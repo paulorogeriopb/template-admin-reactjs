@@ -26,7 +26,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      {/* suppressHydrationWarning ignora atributos extras injetados por extensões */}
+      <body
+        suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable}`}
+      >
         {/* Provider deve estar dentro do body */}
         <DarkModeProvider>{children}</DarkModeProvider>
       </body>

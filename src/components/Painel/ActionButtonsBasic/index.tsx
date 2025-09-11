@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { LuEye, LuSquarePen, LuTrash2 } from "react-icons/lu";
+import { LuEye, LuSquarePen, LuTrash2, LuCirclePlus } from "react-icons/lu";
 import { IoMdMore } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
 
 import DeleteButton from "@/components/DeleteButton";
 import DeleteButtonNoStyle from "@/components/DeleteButtonNoStyle";
@@ -12,11 +13,12 @@ import DeleteButtonNoStyle from "@/components/DeleteButtonNoStyle";
 interface ActionButtonsProps {
   id: number | string;
   basePath: string;
-  entityName: string;
   onSuccess: () => void;
   setError: (message: string | null) => void;
   openId: number | null;
   setOpenId: (id: number | null) => void;
+  roleId?: number; // opcional, caso precise no menu de permissões
+  entityName?: string;
 }
 
 export default function ActionButtons({
@@ -26,6 +28,7 @@ export default function ActionButtons({
   setError,
   openId,
   setOpenId,
+  roleId,
 }: ActionButtonsProps) {
   const isOpen = openId === id;
   const [buttonPos, setButtonPos] = useState<{ top: number; left: number }>({
@@ -33,13 +36,14 @@ export default function ActionButtons({
     left: 0,
   });
 
+  const pathname = usePathname();
+
   const toggleOpen = (e?: React.MouseEvent) => {
     if (!isOpen && e?.currentTarget) {
       const rect = e.currentTarget.getBoundingClientRect();
-      const menuWidth = 215; // w-44 ≈ 44*4 = 176px
+      const menuWidth = 215;
 
       let left = rect.right + window.scrollX - menuWidth;
-      // Evita que o menu saia da tela à esquerda
       if (left < 0) left = 0;
 
       setButtonPos({
@@ -50,17 +54,41 @@ export default function ActionButtons({
     setOpenId(isOpen ? null : Number(id));
   };
 
-  // Fechar dropdown ao clicar fora
+  // Fecha dropdown ao clicar fora
   useEffect(() => {
     const handleClickOutside = () => setOpenId(null);
     if (isOpen) document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, [isOpen, setOpenId]);
 
+  // Fecha menu mobile automaticamente se a tela for ampliada para desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024 && isOpen) {
+        setOpenId(null);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isOpen, setOpenId]);
+
+  const showPermissionsMenuItem =
+    pathname === "/painel/roles/list" && typeof roleId === "number";
+
   return (
     <div>
       {/* Desktop */}
       <div className="hidden lg:flex gap-2">
+        {showPermissionsMenuItem && (
+          <Link
+            href={`/painel/roles/${roleId}/permissions`}
+            className="flex items-center gap-2 px-4 py-2 rounded btn-default shadow-lg"
+            onClick={() => setOpenId(null)}
+          >
+            <LuCirclePlus /> Permissões
+          </Link>
+        )}
         <Link
           href={`${basePath}/${id}`}
           className="btn-light flex items-center gap-1"
@@ -88,7 +116,7 @@ export default function ActionButtons({
         <button
           type="button"
           onClick={(e) => {
-            e.stopPropagation(); // evita fechar ao clicar no botão
+            e.stopPropagation();
             toggleOpen(e);
           }}
           className="btn-light p-2 rounded-full"
@@ -109,6 +137,18 @@ export default function ActionButtons({
             }}
             className="w-44 bg-(--light-primary) dark:bg-(--dark-primary) rounded-lg shadow-lg z-[9999]"
           >
+            {showPermissionsMenuItem && (
+              <li>
+                <Link
+                  href={`/painel/roles/${roleId}/permissions`}
+                  className="flex items-center gap-2 px-4 py-2 rounded btn-default shadow-lg"
+                  onClick={() => setOpenId(null)}
+                >
+                  <LuCirclePlus /> Permissões
+                </Link>
+              </li>
+            )}
+
             <li>
               <Link
                 href={`${basePath}/${id}`}
@@ -121,7 +161,7 @@ export default function ActionButtons({
             <li>
               <Link
                 href={`${basePath}/${id}/edit`}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) text-gray-500 dark:text-gray-400  hover:text-(--default)"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-(--light-secondary) dark:hover:bg-(--dark-tertiary) text-gray-500 dark:text-gray-400 hover:text-(--default)"
                 onClick={() => setOpenId(null)}
               >
                 <LuSquarePen /> Editar
